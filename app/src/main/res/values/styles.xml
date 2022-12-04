@@ -22,4 +22,8 @@
     </style>
 
 
+    <style name="test01" parent="">
+        <item name="cornerSize">5%</item>
+    </style>
+
 </resources>
