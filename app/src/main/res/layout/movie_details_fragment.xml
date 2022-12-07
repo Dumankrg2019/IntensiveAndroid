@@ -9,7 +9,7 @@
 
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/image_preview_tvShow"
+        android:id="@+id/image_poster_movie"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
@@ -19,8 +19,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view"
         app:layout_constraintVertical_weight="3"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent"
-        tools:src="@drawable/aqua" />
+        app:shapeAppearance="@style/CornerSizeOfBottom5Percent"
+        app:srcCompat="@drawable/auamenposter" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -30,7 +30,7 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/ic_arrow_left"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/image_preview_tvShow" />
+        app:layout_constraintTop_toTopOf="@+id/image_poster_movie" />
 
     <View
         android:id="@+id/view"
@@ -51,7 +51,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_preview_tvShow"
+        app:layout_constraintTop_toBottomOf="@+id/image_poster_movie"
         app:layout_constraintVertical_weight="7">
 
         <LinearLayout
@@ -71,7 +71,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_preview_tvShow" />
+                app:layout_constraintTop_toBottomOf="@+id/image_poster_movie" />
 
             <ImageView
                 android:id="@+id/ivLike"
@@ -96,8 +96,8 @@
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_preview_tvShow"
-                app:padding="10dp" />
+                app:layout_constraintTop_toBottomOf="@+id/image_poster_movie"
+                 />
 
             <androidx.appcompat.widget.AppCompatRatingBar
                 android:id="@+id/tvMovieRating"
@@ -120,7 +120,74 @@
             android:layout_height="wrap_content"
             android:text="@string/defaultTextAboutMovie"
             android:textColor="@color/white"
+            android:layout_marginTop="10dp"
             android:textSize="12sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvActorsOfTheMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_actor" />
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Студия"
+                android:layout_marginEnd="15dp"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Жанр"
+                android:layout_marginEnd="15dp"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Год"
+                android:layout_marginEnd="15dp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvStudioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Warnes Bros." />
+            <TextView
+                android:id="@+id/tvGenreName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="action, adventure,  fantasy" />
+            <TextView
+                android:id="@+id/tvYearMovieMade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="2022" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 
     </LinearLayout>
 

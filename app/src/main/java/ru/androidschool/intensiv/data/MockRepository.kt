@@ -41,4 +41,8 @@ object MockRepository {
 
         return tvShowList
     }
+
+    fun getInfoAboutMovie() {
+        val yearMaked:String = "1995"
+    }
 }
