@@ -16,6 +16,7 @@ import ru.androidschool.intensiv.databinding.TvShowsFragmentBinding
 import ru.androidschool.intensiv.ui.feed.MainCardContainer
 import ru.androidschool.intensiv.ui.feed.MovieItem
 import androidx.fragment.app.DialogFragment;
+import com.squareup.picasso.Picasso
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 
 class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
@@ -34,7 +35,17 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MockRepository.getInfoAboutMovie()
+        val data = MockRepository.getInfoAboutMovie()
+
+        binding.apply {
+            Picasso.get().load(data.get(0).imgPoster).into(imagePosterMovie)
+            tvNameOfMovie.text = data.get(0).nameOfMovie
+            tvMovieRating.rating = data.get(0).ratingOfMovie
+            tvAboutMovie.text = data.get(0).descriptionOfMovie
+            tvStudioName.text = data.get(0).studioMake
+            tvGenreName.text = data.get(0).jenreTypeMovie
+            tvYearMovieMade.text = data.get(0).yearMake
+        }
     }
 
     override fun onDestroy() {

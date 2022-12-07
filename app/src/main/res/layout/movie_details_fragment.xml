@@ -7,6 +7,9 @@
     android:background="@color/blueDark"
    >
 
+  <!--ВОПРОС! Закостылил я верстку, вложил в констреинт много лайнеров... еше использовал в
+   констрейнт weight чтобы не задавать размеров  блокам. Хотел бы узнать как
+    правильно подобные макеты верстать-->
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_poster_movie"
@@ -66,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
                 android:layout_weight="1"
-                android:text="Аквамен"
+                android:text="@string/defaultMovieName"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -81,6 +84,12 @@
                 android:src="@drawable/ic_like" />
         </LinearLayout>
 
+        <!--ВОПРОС! В этом лайнере снизу не удалось корректно выравнить,
+         чтобы кнопка занимала место слево скраю врап контентом,
+          а рейтинг был выровнен к правому краю.
+          Сейчас Они выровнены слева друг к другу а не по краям как должно быть.
+          Добавлял weigth - выравнивает правильно как положено, Но
+          кнопка начинает занимать половину всего размера. Не вышло как то(((-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +101,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Смотреть"
+                android:text="@string/btnWatchTitle"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -144,21 +153,21 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Студия"
+                android:text="@string/titleStudioMovieName"
                 android:layout_marginEnd="15dp"
                 android:textColor="@color/white"/>
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Жанр"
+                android:text="@string/titletMovieJenre"
                 android:layout_marginEnd="15dp"
                 android:textColor="@color/white"/>
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Год"
+                android:text="@string/titletYearOfMovie"
                 android:layout_marginEnd="15dp"
                 android:textColor="@color/white"/>
         </LinearLayout>
@@ -171,19 +180,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="Warnes Bros." />
+                android:text="@string/defaultMovieName" />
             <TextView
                 android:id="@+id/tvGenreName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="action, adventure,  fantasy" />
+                android:text="@string/defaultMovieJenreoName" />
             <TextView
                 android:id="@+id/tvYearMovieMade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:text="2022" />
+                android:text="@string/defaultYearOfMovie" />
         </LinearLayout>
 
     </LinearLayout>

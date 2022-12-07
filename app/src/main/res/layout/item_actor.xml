@@ -15,6 +15,9 @@
         app:srcCompat="@drawable/stat"
         android:layout_marginBottom="30dp"/>
 
+    <!-- Закостылил падингом выравнивание текста посередине картинки сверху.
+    Еще нужно было чтобы имя и  фамилия актеров были на разных строках(имя сверху и фам внизу),
+    это я закостылил задав конкретный  размер для текствью-->
     <TextView
         android:id="@+id/textView"
         android:layout_width="80dp"
@@ -23,5 +26,5 @@
         android:paddingStart="7dp"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:text="Джейсон Стэтхем" />
+        android:text="@string/defaultActorName" />
 </FrameLayout>
