@@ -25,4 +25,12 @@
         <item name="cornerSize">5%</item>
     </style>
 
+    <style name="CornerSizeOfBottom5Percent" parent="android:Widget">
+        <item name="cornerSizeBottomLeft">5%</item>
+        <item name="cornerSizeBottomRight">5%</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
