@@ -4,18 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ColorStateListInflaterCompat.inflate
-import androidx.core.content.res.ComplexColorCompat.inflate
 import androidx.fragment.app.Fragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.MockRepository
-import ru.androidschool.intensiv.data.TvShow
-import ru.androidschool.intensiv.databinding.TvShowsFragmentBinding
-import ru.androidschool.intensiv.ui.feed.MainCardContainer
-import ru.androidschool.intensiv.ui.feed.MovieItem
-import androidx.fragment.app.DialogFragment;
 import com.squareup.picasso.Picasso
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 

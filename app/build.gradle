@@ -5,7 +5,7 @@ apply from: "../ktlint.gradle"
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-//keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 33
@@ -17,7 +17,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-//        buildConfigField 'String', 'THE_MOVIE_DATABASE_API', keystoreProperties['THE_MOVIE_DATABASE_API']
+        buildConfigField 'String', 'THE_MOVIE_DATABASE_API', keystoreProperties['THE_MOVIE_DATABASE_API']
     }
     buildTypes {
         release {
@@ -74,4 +74,11 @@ dependencies {
     implementation "com.github.lisawray.groupie:groupie-viewbinding:$rootProject.groupieVersion"
 
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+
+    //retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.5.0"
 }
