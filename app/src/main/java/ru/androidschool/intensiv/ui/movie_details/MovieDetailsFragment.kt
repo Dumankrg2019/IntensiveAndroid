@@ -24,6 +24,10 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
     private var _binding: MovieDetailsFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private val adapter by lazy {
+        GroupAdapter<GroupieViewHolder>()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,6 +50,15 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             tvGenreName.text = data.get(0).jenreTypeMovie
             tvYearMovieMade.text = data.get(0).yearMake
         }
+
+        adapter.apply {
+            addAll(MockRepository.getActorsList().map {
+                    ActorCardContainer(it)
+                }.toList()
+            )
+        }
+
+        binding.rvActorsOfTheMovie.adapter = adapter
     }
 
     override fun onDestroy() {

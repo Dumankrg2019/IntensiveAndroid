@@ -75,4 +75,26 @@ object MockRepository {
 
         return detailMovieList
     }
+
+    fun getActorsList(): List<ActorItem> {
+
+        val actorList = mutableListOf<ActorItem>()
+        val namesList = listOf("Дэйсон Стэтхэм", "Арнольд Шварцнегр", "Алан Мур")
+        for (x in 0..10) {
+            val actorNextRandomValue = Random.nextInt(1, 3)
+            val tvShow = ActorItem(
+                when(actorNextRandomValue) {
+                    1 -> R.drawable.shwarcz
+                    2 -> R.drawable.stat
+                    3 -> R.drawable.shwarcz
+                    else -> R.drawable.stat
+                },
+                namesList.get(actorNextRandomValue)
+
+            )
+            actorList.add(tvShow)
+        }
+
+        return actorList
+    }
 }

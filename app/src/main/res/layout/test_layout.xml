@@ -49,11 +49,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="15dp"
         android:text="@string/defaultMovieName"
-       style="@style/DefaultMiddleSizeTextStyle"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:layout_below="@id/frPoster"
-        />
+       />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -64,12 +66,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:button="@drawable/like_selector"
-        android:text=""
-        tools:text=""
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        android:focusable="true"/>
+        android:button="@drawable/ic_like"
+        android:text="new checkbox"
+        tools:text="" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnWatch"
@@ -79,10 +78,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
         android:text="@string/btnWatchTitle"
-        style="@style/DefaultTextStyle"
-        android:textAllCaps="false"
-        android:background="@drawable/rounded_btn_watch"
-         />
+        android:textColor="@color/white"
+        android:textSize="12sp" />
 
     <androidx.appcompat.widget.AppCompatRatingBar
         android:id="@+id/tvMovieRating"
@@ -93,7 +90,7 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:gravity="end"
@@ -105,14 +102,15 @@
 
     <TextView
         android:id="@+id/tvAboutMovie"
-        style="@style/DefaultTextStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnWatch"
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/defaultTextAboutMovie" />
+        android:text="@string/defaultTextAboutMovie"
+        android:textColor="@color/white"
+        android:textSize="12sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvActorsOfTheMovie"
@@ -120,7 +118,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvAboutMovie"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -131,17 +129,17 @@
         android:layout_height="wrap_content"
         android:text="@string/titleStudioMovieName"
         android:layout_marginEnd="15dp"
-        style="@style/DefaultTextStyle"
+        android:textColor="@color/white"
         android:layout_below="@id/rvActorsOfTheMovie"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/titletMovieJenre"
         android:layout_marginEnd="15dp"
-        style="@style/DefaultTextStyle"
+        android:textColor="@color/white"
         android:layout_below="@id/textView2"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"/>
@@ -151,7 +149,7 @@
         android:layout_height="wrap_content"
         android:text="@string/titletYearOfMovie"
         android:layout_marginEnd="15dp"
-        style="@style/DefaultTextStyle"
+        android:textColor="@color/white"
         android:layout_below="@id/textView3"
         android:layout_marginStart="16dp"
         android:layout_marginTop="7dp"/>
@@ -161,16 +159,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rvActorsOfTheMovie"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/textView2"
         android:text="@string/defaultMovieName"
-        style="@style/DefaultTextStyle"
+        android:textColor="@color/white"
         android:layout_marginStart="12dp"/>
     <TextView
         android:id="@+id/tvGenreName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/DefaultTextStyle"
+        android:textColor="@color/white"
         android:text="@string/defaultMovieJenreoName"
         android:layout_toEndOf="@id/textView2"
         android:layout_below="@id/tvStudioName"
@@ -180,7 +178,7 @@
         android:id="@+id/tvYearMovieMade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/DefaultTextStyle"
+        android:textColor="@color/white"
         android:text="@string/defaultYearOfMovie"
         android:layout_toEndOf="@id/textView2"
         android:layout_below="@id/tvGenreName"
