@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,43 +10,36 @@
         android:id="@+id/image_preview_tvShow"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginTop="25dp"
         android:layout_gravity="top"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"
         android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize5Percent"
-        tools:src="@drawable/Stranger_Things_logo"
-        android:layout_marginBottom="25dp"/>
+        tools:src="@drawable/Stranger_Things_logo" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/tvTvShowName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom">
+        android:layout_below="@id/image_preview_tvShow"
+        android:layout_gravity="start"
+        android:textSize="14sp"
+        tools:text="@string/defaultTvShowName" />
 
-        <TextView
-            android:id="@+id/tvTvShowName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginEnd="25dp"
-            android:layout_weight="1"
-            android:gravity="start"
-            tools:text="@string/defaultTvShowName"
-            android:textSize="14sp" />
-
-        <androidx.appcompat.widget.AppCompatRatingBar
-            android:id="@+id/tvShowRating"
-            style="@style/Base.Widget.AppCompat.RatingBar.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_weight="0"
-            android:gravity="end"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:progressBackgroundTint="@color/colorControlNormal"
-            android:stepSize="0.5"
-            tools:rating="4" />
-    </LinearLayout>
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/tvShowRating"
+        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_preview_tvShow"
+        android:layout_alignParentEnd="true"
+        android:isIndicator="true"
+        android:numStars="10"
+        android:progressBackgroundTint="@color/colorControlNormal"
+        android:stepSize="0.5"
+        tools:rating="4" />
+</RelativeLayout>

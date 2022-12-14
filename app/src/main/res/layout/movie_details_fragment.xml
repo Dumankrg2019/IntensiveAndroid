@@ -1,196 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ru.androidschool.intensiv.ui.movie_details.MovieDetailsFragment"
-    android:background="@color/blueDark"
-    >
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/mainFeedBackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <FrameLayout
-        android:id="@+id/frPoster"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/view">
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/image_poster_movie"
+        tools:context="ru.androidschool.intensiv.ui.movie_details.MovieDetailsFragment"
+        android:background="@color/blueDark"
+        >
+        <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            android:layout_height="20dp"
+            android:background="@color/mainFeedBackground"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view"
-            app:shapeAppearance="@style/CornerSizeOfBottom5Percent"
-            app:srcCompat="@drawable/auamenposter" />
+            app:layout_constraintTop_toTopOf="parent" />
+        <FrameLayout
+            android:id="@+id/frPoster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/view">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/image_poster_movie"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                app:shapeAppearance="@style/CornerSizeOfBottom5Percent"
+                app:srcCompat="@drawable/auamenposter" />
 
-        <ImageView
-            android:id="@+id/imageView2"
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/image_poster_movie" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvNameOfMovie"
+            style="@style/DefaultMiddleSizeTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_below="@id/frPoster"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/defaultMovieName" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/frPoster"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:button="@drawable/like_selector"
+            android:text=""
+            tools:text=""
+            android:background="@android:color/transparent"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnWatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvNameOfMovie"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/btnWatchTitle"
+            style="@style/DefaultTextStyle"
+            android:textAllCaps="false"
+            android:background="@drawable/rounded_btn_watch"
+             />
+
+        <androidx.appcompat.widget.AppCompatRatingBar
+            android:id="@+id/tvMovieRating"
+            style="@style/Base.Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvNameOfMovie"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="end"
+            android:isIndicator="true"
+            android:numStars="10"
+            android:progressBackgroundTint="@color/colorControlNormal"
+            android:stepSize="1"
+            tools:rating="6" />
+
+        <TextView
+            android:id="@+id/tvAboutMovie"
+            style="@style/DefaultTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnWatch"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/ic_arrow_left"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/image_poster_movie" />
-    </FrameLayout>
-    <TextView
-        android:id="@+id/tvNameOfMovie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:text="@string/defaultMovieName"
-       style="@style/DefaultMiddleSizeTextStyle"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/frPoster"
-        />
+            android:layout_marginEnd="16dp"
+            android:text="@string/defaultTextAboutMovie" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/frPoster"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:button="@drawable/like_selector"
-        android:text=""
-        tools:text=""
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        android:focusable="true"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvActorsOfTheMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvAboutMovie"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_actor" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titleStudioMovieName"
+            android:layout_marginEnd="15dp"
+            style="@style/DefaultTextStyle"
+            android:layout_below="@id/rvActorsOfTheMovie"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"/>
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titletMovieJenre"
+            android:layout_marginEnd="15dp"
+            style="@style/DefaultTextStyle"
+            android:layout_below="@id/textView2"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="7dp"/>
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titletYearOfMovie"
+            android:layout_marginEnd="15dp"
+            style="@style/DefaultTextStyle"
+            android:layout_below="@id/textView3"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="7dp"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnWatch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvNameOfMovie"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/btnWatchTitle"
-        style="@style/DefaultTextStyle"
-        android:textAllCaps="false"
-        android:background="@drawable/rounded_btn_watch"
-         />
+        <TextView
+            android:id="@+id/tvStudioName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rvActorsOfTheMovie"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/textView2"
+            android:text="@string/defaultMovieName"
+            style="@style/DefaultTextStyle"
+            android:layout_marginStart="12dp"/>
+        <TextView
+            android:id="@+id/tvGenreName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/DefaultTextStyle"
+            android:text="@string/defaultMovieJenreoName"
+            android:layout_toEndOf="@id/textView2"
+            android:layout_below="@id/tvStudioName"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="7dp"/>
+        <TextView
+            android:id="@+id/tvYearMovieMade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/DefaultTextStyle"
+            android:text="@string/defaultYearOfMovie"
+            android:layout_toEndOf="@id/textView2"
+            android:layout_below="@id/tvGenreName"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="7dp"/>
 
-    <androidx.appcompat.widget.AppCompatRatingBar
-        android:id="@+id/tvMovieRating"
-        style="@style/Base.Widget.AppCompat.RatingBar.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvNameOfMovie"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:gravity="end"
-        android:isIndicator="true"
-        android:numStars="10"
-        android:progressBackgroundTint="@color/colorControlNormal"
-        android:stepSize="1"
-        tools:rating="6" />
-
-    <TextView
-        android:id="@+id/tvAboutMovie"
-        style="@style/DefaultTextStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btnWatch"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/defaultTextAboutMovie" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvActorsOfTheMovie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvAboutMovie"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_actor" />
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/titleStudioMovieName"
-        android:layout_marginEnd="15dp"
-        style="@style/DefaultTextStyle"
-        android:layout_below="@id/rvActorsOfTheMovie"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"/>
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/titletMovieJenre"
-        android:layout_marginEnd="15dp"
-        style="@style/DefaultTextStyle"
-        android:layout_below="@id/textView2"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="7dp"/>
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/titletYearOfMovie"
-        android:layout_marginEnd="15dp"
-        style="@style/DefaultTextStyle"
-        android:layout_below="@id/textView3"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="7dp"/>
-
-    <TextView
-        android:id="@+id/tvStudioName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rvActorsOfTheMovie"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@id/textView2"
-        android:text="@string/defaultMovieName"
-        style="@style/DefaultTextStyle"
-        android:layout_marginStart="12dp"/>
-    <TextView
-        android:id="@+id/tvGenreName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/DefaultTextStyle"
-        android:text="@string/defaultMovieJenreoName"
-        android:layout_toEndOf="@id/textView2"
-        android:layout_below="@id/tvStudioName"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="7dp"/>
-    <TextView
-        android:id="@+id/tvYearMovieMade"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/DefaultTextStyle"
-        android:text="@string/defaultYearOfMovie"
-        android:layout_toEndOf="@id/textView2"
-        android:layout_below="@id/tvGenreName"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="7dp"/>
-
-    <ProgressBar
-        android:id="@+id/pbDetailMovie"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-</RelativeLayout>
+        <ProgressBar
+            android:id="@+id/pbDetailMovie"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</ScrollView>

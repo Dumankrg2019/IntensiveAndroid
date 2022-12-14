@@ -16,6 +16,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.data.response.detail_movie.DetailMovieResponse
+import ru.androidschool.intensiv.data.response.movie_cast.MovieCast
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.feed.FeedFragment
@@ -85,14 +86,35 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 //            tvYearMovieMade.text = data.get(0).yearMake
 //        }
 
-        adapter.apply {
-            addAll(MockRepository.getActorsList().map {
-                    ActorCardContainer(it)
-                }.toList()
-            )
-        }
+        val getMovieCast = MovieApiClient.apiClient.getMovieCast(movieId,API_KEY,"ru")
+        getMovieCast.enqueue(object: Callback<MovieCast>{
+            override fun onResponse(call: Call<MovieCast>, response: Response<MovieCast>) {
+               val dataCast = response.body()?.cast
+                dataCast?.let{castItem->
+                   adapter.apply {
+                       addAll(
+                           castItem.map{
+                               ActorCardContainer(it, requireActivity())
+                           }.toList()
+                       )
+                   }
+                }
+                binding.rvActorsOfTheMovie.adapter = adapter
+            }
 
-        binding.rvActorsOfTheMovie.adapter = adapter
+            override fun onFailure(call: Call<MovieCast>, t: Throwable) {
+                Log.e("error apiCast:", t.stackTraceToString())
+            }
+
+        })
+//        adapter.apply {
+//            addAll(MockRepository.getActorsList().map {
+//                    ActorCardContainer(it)
+//                }.toList()
+//            )
+//        }
+
+       // binding.rvActorsOfTheMovie.adapter = adapter
     }
 
     override fun onDestroy() {
