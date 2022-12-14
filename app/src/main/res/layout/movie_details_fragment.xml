@@ -98,10 +98,10 @@
         android:layout_marginBottom="16dp"
         android:gravity="end"
         android:isIndicator="true"
-        android:numStars="5"
+        android:numStars="10"
         android:progressBackgroundTint="@color/colorControlNormal"
-        android:stepSize="0.5"
-        tools:rating="4" />
+        android:stepSize="1"
+        tools:rating="6" />
 
     <TextView
         android:id="@+id/tvAboutMovie"
@@ -186,4 +186,11 @@
         android:layout_below="@id/tvGenreName"
         android:layout_marginStart="12dp"
         android:layout_marginTop="7dp"/>
+
+    <ProgressBar
+        android:id="@+id/pbDetailMovie"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
 </RelativeLayout>

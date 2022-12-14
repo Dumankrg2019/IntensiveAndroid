@@ -124,6 +124,8 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
     private fun openMovieDetails(movie: Movie) {
         val bundle = Bundle()
         bundle.putString(KEY_TITLE, movie.title)
+        movie.id?.let { bundle.putInt("movie_id", it) }
+        Log.e("TAG", "clicked ${movie.id}")
         findNavController().navigate(R.id.movie_details_fragment, bundle, options)
     }
 

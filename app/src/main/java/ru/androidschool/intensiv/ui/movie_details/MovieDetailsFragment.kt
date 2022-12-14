@@ -1,6 +1,7 @@
 package ru.androidschool.intensiv.ui.movie_details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,15 @@ import com.xwray.groupie.GroupieViewHolder
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.MockRepository
 import com.squareup.picasso.Picasso
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import ru.androidschool.intensiv.BuildConfig
+import ru.androidschool.intensiv.data.response.detail_movie.DetailMovieResponse
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
+import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.feed.FeedFragment
+import timber.log.Timber
 
 class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
@@ -34,15 +43,47 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         super.onViewCreated(view, savedInstanceState)
         val data = MockRepository.getInfoAboutMovie()
 
-        binding.apply {
-            Picasso.get().load(data.get(0).imgPoster).into(imagePosterMovie)
-            tvNameOfMovie.text = data.get(0).nameOfMovie
-            tvMovieRating.rating = data.get(0).ratingOfMovie
-            tvAboutMovie.text = data.get(0).descriptionOfMovie
-            tvStudioName.text = data.get(0).studioMake
-            tvGenreName.text = data.get(0).jenreTypeMovie
-            tvYearMovieMade.text = data.get(0).yearMake
-        }
+        val movieId = arguments?.getInt("movie_id")
+        val apiKey = arguments?.getString(FeedFragment.KEY_TITLE)
+        Log.e("from DetailMovie", "$movieId")
+
+        val getDetailMovie =  MovieApiClient.apiClient.getDetailMovie(movieId!!,API_KEY,"ru", )
+
+        getDetailMovie.enqueue(object: Callback<DetailMovieResponse> {
+            override fun onResponse(
+                call: Call<DetailMovieResponse>,
+                response: Response<DetailMovieResponse>
+            ) {
+                val detailMovie = response.body()
+                Log.e("from DetailMovie", "${response.body()}")
+                binding.pbDetailMovie.visibility = View.GONE
+                detailMovie?.let {
+                    binding.apply {
+                        Picasso.get().load(it.posterPath).into(imagePosterMovie)
+                        tvNameOfMovie.text = it.title
+                        tvMovieRating.rating = it.vote_average.toFloat()
+                        tvAboutMovie.text = it.overview
+                        tvStudioName.text = it.production_companies.get(0).name
+                        tvGenreName.text = it.genres.get(0).name
+                        tvYearMovieMade.text = it.release_date
+                    }
+                }
+            }
+            override fun onFailure(call: Call<DetailMovieResponse>, t: Throwable) {
+                Timber.e(t.stackTraceToString())
+            }
+
+        })
+
+//        binding.apply {
+//            Picasso.get().load(data.get(0).imgPoster).into(imagePosterMovie)
+//            tvNameOfMovie.text = data.get(0).nameOfMovie
+//            tvMovieRating.rating = data.get(0).ratingOfMovie
+//            tvAboutMovie.text = data.get(0).descriptionOfMovie
+//            tvStudioName.text = data.get(0).studioMake
+//            tvGenreName.text = data.get(0).jenreTypeMovie
+//            tvYearMovieMade.text = data.get(0).yearMake
+//        }
 
         adapter.apply {
             addAll(MockRepository.getActorsList().map {
@@ -57,5 +98,9 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    companion object {
+        private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 }
