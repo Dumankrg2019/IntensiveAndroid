@@ -1,16 +1,15 @@
 package ru.androidschool.intensiv.data
 
-import com.squareup.picasso.Picasso
 import ru.androidschool.intensiv.R
 import kotlin.random.Random
 
 object MockRepository {
 
-    fun getMovies(): List<Movie> {
+    fun getMovies(): List<MovieFromRepo> {
 
-        val moviesList = mutableListOf<Movie>()
+        val moviesList = mutableListOf<MovieFromRepo>()
         for (x in 0..10) {
-            val movie = Movie(
+            val movie = MovieFromRepo(
                 title = "Spider-Man $x",
                 voteAverage = 10.0 - x
             )

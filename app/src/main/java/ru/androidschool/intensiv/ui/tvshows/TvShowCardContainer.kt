@@ -1,23 +1,28 @@
 package ru.androidschool.intensiv.ui.tvshows
 
+import android.content.Context
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.squareup.picasso.Picasso
-import com.xwray.groupie.GroupieViewHolder
-import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.Movie
 import ru.androidschool.intensiv.data.TvShow
+import ru.androidschool.intensiv.data.response.tv_shows.Result
+import ru.androidschool.intensiv.data.response.tv_shows.TvShowResponse
 import ru.androidschool.intensiv.databinding.ItemTvshowBinding
+import ru.androidschool.intensiv.util.getProgressDrawable
+import ru.androidschool.intensiv.util.loadImage
 
 
-class TvShowCardContainer(private val content: TvShow
+class TvShowCardContainer(private val content: Result,
+                          val context: Context
                           ): BindableItem<ItemTvshowBinding>() {
 
     override fun bind(viewBinding: ItemTvshowBinding, position: Int) {
-       viewBinding.tvTvShowName.text = content.title
-        Picasso.get().load(content.imgOfTvShow).into(viewBinding.imagePreviewTvShow)
-        viewBinding.tvShowRating.rating = content.raiting
+        val progressDrawable = getProgressDrawable(context)
+       viewBinding.tvTvShowName.text = content.name
+        viewBinding.imagePreviewTvShow.loadImage(content.backdropPath, progressDrawable)
+        viewBinding.tvShowRating.rating = content.vote_average?.toFloat() ?: 0.0f
     }
 
     override fun getLayout() = R.layout.item_tvshow
