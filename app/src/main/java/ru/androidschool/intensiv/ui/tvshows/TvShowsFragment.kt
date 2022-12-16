@@ -42,7 +42,7 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val getTvShows = MovieApiClient.apiClient.getTvShows(API_KEY, "ru")
+        val getTvShows = MovieApiClient.apiClient.getTvShows()
         getTvShows.enqueue(object: Callback<TvShowResponse> {
             override fun onResponse(
                 call: Call<TvShowResponse>,
@@ -52,7 +52,7 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
                 tvShowData?.let {
                         adapter.apply {
                                 addAll(it.map { it2->
-                                    TvShowCardContainer(it2, requireActivity())
+                                    it2?.let { it1 -> TvShowCardContainer(it1, requireActivity()) }
                                 }.toList()
                             )
                         }
@@ -73,7 +73,6 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
     }
 
     companion object {
-        private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 
 }

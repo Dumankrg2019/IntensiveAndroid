@@ -10,6 +10,8 @@ import ru.androidschool.intensiv.data.TvShow
 import ru.androidschool.intensiv.data.response.tv_shows.Result
 import ru.androidschool.intensiv.data.response.tv_shows.TvShowResponse
 import ru.androidschool.intensiv.databinding.ItemTvshowBinding
+import ru.androidschool.intensiv.util.getProgressDrawable
+import ru.androidschool.intensiv.util.loadImage
 
 
 class TvShowCardContainer(private val content: Result,
@@ -17,10 +19,10 @@ class TvShowCardContainer(private val content: Result,
                           ): BindableItem<ItemTvshowBinding>() {
 
     override fun bind(viewBinding: ItemTvshowBinding, position: Int) {
+        val progressDrawable = getProgressDrawable(context)
        viewBinding.tvTvShowName.text = content.name
-        ContextCompat.getDrawable(context, R.drawable.ic_poster_placeholder)
-            ?.let { Picasso.get().load(content.backdropPath).placeholder(it).into(viewBinding.imagePreviewTvShow) }
-        viewBinding.tvShowRating.rating = content.vote_average.toFloat()
+        viewBinding.imagePreviewTvShow.loadImage(content.backdropPath, progressDrawable)
+        viewBinding.tvShowRating.rating = content.vote_average?.toFloat() ?: 0.0f
     }
 
     override fun getLayout() = R.layout.item_tvshow

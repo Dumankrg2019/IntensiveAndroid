@@ -18,6 +18,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField 'String', 'THE_MOVIE_DATABASE_API', keystoreProperties['THE_MOVIE_DATABASE_API']
+        buildConfigField "String", 'BASE_URL', "\"https://api.themoviedb.org/3/\""
+        buildConfigField "String", 'BASE_IMAGE_URL', "\"https://image.tmdb.org/t/p/w500\""
     }
     buildTypes {
         release {
@@ -53,6 +55,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
     // Testing
     testImplementation "junit:junit:$junitVersion"
@@ -76,9 +79,9 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
     //retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-    implementation 'com.google.code.gson:gson:2.8.9'
-    implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.5.0"
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit2Version"
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.adapterRxJava"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.loggingInterceptorOkHTTP"
 }

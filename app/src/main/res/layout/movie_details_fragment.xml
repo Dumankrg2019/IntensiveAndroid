@@ -58,10 +58,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/frPoster"
             android:layout_alignEnd="@id/chbLike"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="75dp"
-            android:layout_alignParentStart="true"
             android:layout_marginRight="15dp"
             android:text="@string/defaultMovieName" />
 
@@ -84,16 +84,15 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnWatch"
+            style="@style/DefaultTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvNameOfMovie"
             android:layout_marginStart="16dp"
             android:layout_marginTop="15dp"
-            android:text="@string/btnWatchTitle"
-            style="@style/DefaultTextStyle"
-            android:textAllCaps="false"
             android:background="@drawable/rounded_btn_watch"
-             />
+            android:text="@string/btnWatchTitle"
+            android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatRatingBar
             android:id="@+id/tvMovieRating"

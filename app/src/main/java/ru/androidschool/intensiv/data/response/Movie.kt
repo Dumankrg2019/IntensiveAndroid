@@ -1,6 +1,7 @@
 package ru.androidschool.intensiv.data.response
 
 import com.google.gson.annotations.SerializedName
+import ru.androidschool.intensiv.BuildConfig
 
 data class Movie (
     @SerializedName("adult")
@@ -31,5 +32,5 @@ data class Movie (
 ) {
     @SerializedName("poster_path")
     var posterPath: String? = null
-        get() = "https://image.tmdb.org/t/p/w500$field"
+        get() = "${BuildConfig.BASE_IMAGE_URL}$field"
 }

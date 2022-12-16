@@ -1,31 +1,53 @@
 package ru.androidschool.intensiv.data.response.detail_movie
 
 import com.google.gson.annotations.SerializedName
+import ru.androidschool.intensiv.BuildConfig
 
 data class DetailMovieResponse(
-    val adult: Boolean,
-    val backdrop_path: String,
-    val budget: Int,
-    val genres: List<Genre>,
-    val homepage: String,
-    val id: Int,
-    val imdb_id: String,
-    val original_language: String,
-    val original_title: String,
-    val overview: String,
-    val popularity: Double,
-    val production_companies: List<ProductionCompany>,
-    val release_date: String,
-    val revenue: Int,
-    val runtime: Int,
-    val status: String,
+    @SerializedName("adult")
+    val adult: Boolean?,
+    @SerializedName("backdrop_path")
+    val backdrop_path: String?,
+    @SerializedName("budget")
+    val budget: Int?,
+    @SerializedName("genres")
+    val genres: List<Genre?>?,
+    @SerializedName("homepage")
+    val homepage: String?,
+    @SerializedName("id")
+    val id: Int?,
+    @SerializedName("imdb_id")
+    val imdb_id: String?,
+    @SerializedName("original_language")
+    val original_language: String?,
+    @SerializedName("original_title")
+    val original_title: String?,
+    @SerializedName("overview")
+    val overview: String?,
+    @SerializedName("popularity")
+    val popularity: Double?,
+    @SerializedName("production_companies")
+    val production_companies: List<ProductionCompany?>?,
+    @SerializedName("release_date")
+    val release_date: String?,
+    @SerializedName("revenue")
+    val revenue: Int?,
+    @SerializedName("runtime")
+    val runtime: Int?,
+    @SerializedName("status")
+    val status: String?,
+    @SerializedName("tagline")
     val tagline: String,
-    val title: String,
-    val video: Boolean,
-    val vote_average: Double,
-    val vote_count: Int
+    @SerializedName("title")
+    val title: String?,
+    @SerializedName("video")
+    val video: Boolean?,
+    @SerializedName("vote_average")
+    val vote_average: Double?,
+    @SerializedName("vote_count")
+    val vote_count: Int?
 ) {
     @SerializedName("poster_path")
     var posterPath: String? = null
-        get() = "https://image.tmdb.org/t/p/w500$field"
+        get() = "${BuildConfig.BASE_IMAGE_URL}$field"
 }

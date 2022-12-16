@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -20,7 +21,10 @@ import ru.androidschool.intensiv.data.response.movie_cast.MovieCast
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.feed.FeedFragment
+import ru.androidschool.intensiv.util.getProgressDrawable
 import timber.log.Timber
+import ru.androidschool.intensiv.util.loadImage
+
 
 class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
@@ -45,10 +49,10 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         val data = MockRepository.getInfoAboutMovie()
 
         val movieId = arguments?.getInt("movie_id")
-        val apiKey = arguments?.getString(FeedFragment.KEY_TITLE)
+
         Log.e("from DetailMovie", "$movieId")
 
-        val getDetailMovie =  MovieApiClient.apiClient.getDetailMovie(movieId!!,API_KEY,"ru", )
+        val getDetailMovie =  MovieApiClient.apiClient.getDetailMovie(movieId!!)
 
         getDetailMovie.enqueue(object: Callback<DetailMovieResponse> {
             override fun onResponse(
@@ -58,14 +62,16 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                 val detailMovie = response.body()
                 Log.e("from DetailMovie", "${response.body()}")
                 binding.pbDetailMovie.visibility = View.GONE
+                val progressDrawable = getProgressDrawable(requireActivity())
                 detailMovie?.let {
                     binding.apply {
-                        Picasso.get().load(it.posterPath).into(imagePosterMovie)
+                      //  Picasso.get().load(it.posterPath).into(imagePosterMovie)
+                        imagePosterMovie.loadImage(it.posterPath, progressDrawable)
                         tvNameOfMovie.text = it.title
-                        tvMovieRating.rating = it.vote_average.toFloat()
+                        tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
                         tvAboutMovie.text = it.overview
-                        tvStudioName.text = it.production_companies.get(0).name
-                        tvGenreName.text = it.genres.get(0).name
+                        tvStudioName.text = it.production_companies?.get(0)?.name
+                        tvGenreName.text = it.genres?.get(0)?.name
                         tvYearMovieMade.text = it.release_date
                     }
                 }
@@ -76,17 +82,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
         })
 
-//        binding.apply {
-//            Picasso.get().load(data.get(0).imgPoster).into(imagePosterMovie)
-//            tvNameOfMovie.text = data.get(0).nameOfMovie
-//            tvMovieRating.rating = data.get(0).ratingOfMovie
-//            tvAboutMovie.text = data.get(0).descriptionOfMovie
-//            tvStudioName.text = data.get(0).studioMake
-//            tvGenreName.text = data.get(0).jenreTypeMovie
-//            tvYearMovieMade.text = data.get(0).yearMake
-//        }
-
-        val getMovieCast = MovieApiClient.apiClient.getMovieCast(movieId,API_KEY,"ru")
+        val getMovieCast = MovieApiClient.apiClient.getMovieCast(movieId)
         getMovieCast.enqueue(object: Callback<MovieCast>{
             override fun onResponse(call: Call<MovieCast>, response: Response<MovieCast>) {
                val dataCast = response.body()?.cast
@@ -94,7 +90,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                    adapter.apply {
                        addAll(
                            castItem.map{
-                               ActorCardContainer(it, requireActivity())
+                               it?.let { it1 -> ActorCardContainer(it1, requireActivity()) }
                            }.toList()
                        )
                    }
@@ -107,14 +103,6 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             }
 
         })
-//        adapter.apply {
-//            addAll(MockRepository.getActorsList().map {
-//                    ActorCardContainer(it)
-//                }.toList()
-//            )
-//        }
-
-       // binding.rvActorsOfTheMovie.adapter = adapter
     }
 
     override fun onDestroy() {
@@ -123,6 +111,5 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
     }
 
     companion object {
-        private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 }

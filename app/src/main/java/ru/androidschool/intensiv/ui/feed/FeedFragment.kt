@@ -65,7 +65,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
             }
         }
 
-        val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies(API_KEY, "ru")
+        val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
         getUpComingMovie.enqueue(object: Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                     val upcomingMovies = response.body()?.results
@@ -74,7 +74,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                         MainCardContainer(
                             R.string.upcoming,
                             upcomingMovies.map { it2->
-                                MovieItem(it2) {movie->
+                                MovieItem(it2!!) {movie->
                                     openMovieDetails(movie)
                                 }
                             }.toList()
@@ -95,7 +95,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         })
 
         //второй запрос
-        val getPopularMovies = MovieApiClient.apiClient.getPopularMovies(API_KEY, "ru")
+        val getPopularMovies = MovieApiClient.apiClient.getPopularMovies()
         getPopularMovies.enqueue(object: Callback<MovieResponse> {
             override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
                val popularMovies = response.body()?.results
@@ -104,7 +104,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                         MainCardContainer(
                             R.string.popular,
                             popularMovies.map { it2->
-                                MovieItem(it2) {movie->
+                                MovieItem(it2!!) {movie->
                                     openMovieDetails(movie)
                                 }
                             }.toList()
@@ -155,6 +155,5 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         const val KEY_TITLE = "title"
         const val KEY_SEARCH = "search"
         private val TAG = "From Feed Fragment"
-        private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 }
