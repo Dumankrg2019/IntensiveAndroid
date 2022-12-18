@@ -1,5 +1,6 @@
 package ru.androidschool.intensiv.ui.feed
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -8,6 +9,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.jetbrains.annotations.Async
 import ru.androidschool.intensiv.BuildConfig
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,6 +58,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         return binding.root
     }
 
+    @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,59 +71,63 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         }
 
         val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
-        getUpComingMovie.enqueue(object: Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                    val upcomingMovies = response.body()?.results
-                upcomingMovies?.let { it ->
-                    val listOfMovie = listOf(
-                        MainCardContainer(
-                            R.string.upcoming,
-                            upcomingMovies.map { it2->
-                                MovieItem(it2!!) {movie->
-                                    openMovieDetails(movie)
-                                }
-                            }.toList()
+
+        getUpComingMovie
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {dataMovie->
+                    val upcomingMovies = dataMovie.results
+                    upcomingMovies?.let { it ->
+                        val listOfMovie = listOf(
+                            MainCardContainer(
+                                R.string.upcoming,
+                                upcomingMovies.map { it2->
+                                    MovieItem(it2!!) {movie->
+                                        openMovieDetails(movie)
+                                    }
+                                }.toList()
+                            )
                         )
-                    )
 
-                    binding.moviesRecyclerView.adapter =
-                        adapter.apply {
-                            addAll(listOfMovie)
-                        }
+                        binding.moviesRecyclerView.adapter =
+                            adapter.apply {
+                                addAll(listOfMovie)
+                            }
 
+                    }
+                },
+                {error->
+                    Timber.e(error.stackTraceToString())
                 }
-            }
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Timber.e(t.stackTraceToString())
-            }
-
-        })
+            )
 
         //второй запрос
         val getPopularMovies = MovieApiClient.apiClient.getPopularMovies()
-        getPopularMovies.enqueue(object: Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-               val popularMovies = response.body()?.results
-                popularMovies?.let { it->
-                    val listViewOfPopular = listOf(
-                        MainCardContainer(
-                            R.string.popular,
-                            popularMovies.map { it2->
-                                MovieItem(it2!!) {movie->
-                                    openMovieDetails(movie)
-                                }
-                            }.toList()
+        getPopularMovies
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {popularMovie->
+                    val popularMovies = popularMovie.results
+                    popularMovies?.let { it->
+                        val listViewOfPopular = listOf(
+                            MainCardContainer(
+                                R.string.popular,
+                                popularMovies.map { it2->
+                                    MovieItem(it2!!) {movie->
+                                        openMovieDetails(movie)
+                                    }
+                                }.toList()
+                            )
                         )
-                    )
-                    adapter.apply { addAll(listViewOfPopular) }
+                        adapter.apply { addAll(listViewOfPopular) }
+                    }
+                },
+                {error->
+                    Log.e("error from", " popularMovie:${error.stackTraceToString()}")
                 }
-            }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Timber.e(t.stackTraceToString())
-            }
-
-        })
+            )
     }
 
     private fun openMovieDetails(movie: Movie) {

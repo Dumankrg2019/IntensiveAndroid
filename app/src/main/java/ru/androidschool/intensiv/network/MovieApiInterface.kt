@@ -1,5 +1,6 @@
 package ru.androidschool.intensiv.network
 
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -14,10 +15,10 @@ interface MovieApiInterface {
 
     @GET("movie/upcoming")
     fun getUpComingMovies(@Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
-                          @Query("language") language: String = "ru"): Call<MovieResponse>
+                          @Query("language") language: String = "ru"): Single<MovieResponse>
     @GET("movie/popular")
     fun getPopularMovies(@Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
-                          @Query("language") language: String = "ru"): Call<MovieResponse>
+                          @Query("language") language: String = "ru"): Single<MovieResponse>
 
     @GET("movie/{movie_id}")
     fun getDetailMovie(@Path("movie_id")  movie_id: Int,
