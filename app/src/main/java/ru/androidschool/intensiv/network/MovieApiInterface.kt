@@ -25,7 +25,7 @@ interface MovieApiInterface {
         @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
         @Query("language") language: String = "ru",
         )
-    : Call<DetailMovieResponse>
+    : Single<DetailMovieResponse>
 
     @GET("movie/{movie_id}/credits")
     fun getMovieCast(@Path("movie_id") movie_id: Int,

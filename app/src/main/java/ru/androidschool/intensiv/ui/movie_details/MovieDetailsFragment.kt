@@ -1,28 +1,28 @@
 package ru.androidschool.intensiv.ui.movie_details
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.MockRepository
-import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.androidschool.intensiv.BuildConfig
-import ru.androidschool.intensiv.data.response.detail_movie.DetailMovieResponse
+import ru.androidschool.intensiv.R
+import ru.androidschool.intensiv.data.MockRepository
 import ru.androidschool.intensiv.data.response.movie_cast.MovieCast
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.network.MovieApiClient
-import ru.androidschool.intensiv.ui.feed.FeedFragment
 import ru.androidschool.intensiv.util.getProgressDrawable
-import timber.log.Timber
 import ru.androidschool.intensiv.util.loadImage
 
 
@@ -44,6 +44,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         return binding.root
     }
 
+    @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val data = MockRepository.getInfoAboutMovie()
@@ -52,35 +53,69 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
         Log.e("from DetailMovie", "$movieId")
 
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+        }
         val getDetailMovie =  MovieApiClient.apiClient.getDetailMovie(movieId!!)
 
-        getDetailMovie.enqueue(object: Callback<DetailMovieResponse> {
-            override fun onResponse(
-                call: Call<DetailMovieResponse>,
-                response: Response<DetailMovieResponse>
-            ) {
-                val detailMovie = response.body()
-                Log.e("from DetailMovie", "${response.body()}")
-                binding.pbDetailMovie.visibility = View.GONE
-                val progressDrawable = getProgressDrawable(requireActivity())
-                detailMovie?.let {
-                    binding.apply {
-                      //  Picasso.get().load(it.posterPath).into(imagePosterMovie)
-                        imagePosterMovie.loadImage(it.posterPath, progressDrawable)
-                        tvNameOfMovie.text = it.title
-                        tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
-                        tvAboutMovie.text = it.overview
-                        tvStudioName.text = it.production_companies?.get(0)?.name
-                        tvGenreName.text = it.genres?.get(0)?.name
-                        tvYearMovieMade.text = it.release_date
+        getDetailMovie
+            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {dataMovieDetail->
+//                    val detailMovie = dataMovieDetail
+                    dataMovieDetail?.let {
+                        binding.pbDetailMovie.visibility = View.GONE
+                        val progressDrawable = getProgressDrawable(requireActivity())
+                        dataMovieDetail.let {item->
+                            binding.apply {
+                                //  Picasso.get().load(it.posterPath).into(imagePosterMovie)
+                                imagePosterMovie.loadImage(it.posterPath, progressDrawable)
+                                tvNameOfMovie.text = it.title
+                                tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
+                                tvAboutMovie.text = it.overview
+                                tvStudioName.text = it.production_companies?.get(0)?.name
+                                tvGenreName.text = it.genres?.get(0)?.name
+                                tvYearMovieMade.text = it.release_date
+                            }
+                        }
                     }
+                },
+                {error->
+                    Log.e("eeror from DetailMovie", "${error.printStackTrace()} \n${error.stackTrace.toList()}\n" +
+                            "${error.message} \n${error.localizedMessage}")
                 }
-            }
-            override fun onFailure(call: Call<DetailMovieResponse>, t: Throwable) {
-                Timber.e(t.stackTraceToString())
-            }
-
-        })
+            )
+//        getDetailMovie.enqueue(object: Callback<DetailMovieResponse> {
+//            override fun onResponse(
+//                call: Call<DetailMovieResponse>,
+//                response: Response<DetailMovieResponse>
+//            ) {
+//                val detailMovie = response.body()
+//                Log.e("from DetailMovie", "${response.body()}")
+//                binding.pbDetailMovie.visibility = View.GONE
+//                val progressDrawable = getProgressDrawable(requireActivity())
+//                detailMovie?.let {
+//                    binding.apply {
+//                      //  Picasso.get().load(it.posterPath).into(imagePosterMovie)
+//                        imagePosterMovie.loadImage(it.posterPath, progressDrawable)
+//                        tvNameOfMovie.text = it.title
+//                        tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
+//                        tvAboutMovie.text = it.overview
+//                        tvStudioName.text = it.production_companies?.get(0)?.name
+//                        tvGenreName.text = it.genres?.get(0)?.name
+//                        tvYearMovieMade.text = it.release_date
+//                    }
+//                }
+//            }
+//            override fun onFailure(call: Call<DetailMovieResponse>, t: Throwable) {
+//                Timber.e(t.stackTraceToString())
+//            }
+//
+//        })
 
         val getMovieCast = MovieApiClient.apiClient.getMovieCast(movieId)
         getMovieCast.enqueue(object: Callback<MovieCast>{
