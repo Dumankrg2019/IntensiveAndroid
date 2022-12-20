@@ -31,10 +31,10 @@ interface MovieApiInterface {
     fun getMovieCast(@Path("movie_id") movie_id: Int,
                      @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
                      @Query("language") language: String = "ru",
-    ): Call<MovieCast>
+    ): Single<MovieCast>
 
     @GET("tv/popular")
     fun getTvShows(@Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
                      @Query("language") language: String = "ru",
-    ): Call<TvShowResponse>
+    ): Single<TvShowResponse>
 }

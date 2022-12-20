@@ -44,6 +44,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         return binding.root
     }
 
+    //idea рекомендовала эту аннотацию, потому что код запроса RxJava светлся серым
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,26 +54,25 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
         Log.e("from DetailMovie", "$movieId")
 
+        //вставил эту проверку из-за ошибка(со стэковерфлоу), которая происходила в этом запросе
         val SDK_INT = Build.VERSION.SDK_INT
         if (SDK_INT > 8) {
             val policy = ThreadPolicy.Builder()
                 .permitAll().build()
             StrictMode.setThreadPolicy(policy)
         }
+        //получение инфо о фильме
         val getDetailMovie =  MovieApiClient.apiClient.getDetailMovie(movieId!!)
-
         getDetailMovie
             .observeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {dataMovieDetail->
-//                    val detailMovie = dataMovieDetail
                     dataMovieDetail?.let {
                         binding.pbDetailMovie.visibility = View.GONE
                         val progressDrawable = getProgressDrawable(requireActivity())
                         dataMovieDetail.let {item->
                             binding.apply {
-                                //  Picasso.get().load(it.posterPath).into(imagePosterMovie)
                                 imagePosterMovie.loadImage(it.posterPath, progressDrawable)
                                 tvNameOfMovie.text = it.title
                                 tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
@@ -89,55 +89,30 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                             "${error.message} \n${error.localizedMessage}")
                 }
             )
-//        getDetailMovie.enqueue(object: Callback<DetailMovieResponse> {
-//            override fun onResponse(
-//                call: Call<DetailMovieResponse>,
-//                response: Response<DetailMovieResponse>
-//            ) {
-//                val detailMovie = response.body()
-//                Log.e("from DetailMovie", "${response.body()}")
-//                binding.pbDetailMovie.visibility = View.GONE
-//                val progressDrawable = getProgressDrawable(requireActivity())
-//                detailMovie?.let {
-//                    binding.apply {
-//                      //  Picasso.get().load(it.posterPath).into(imagePosterMovie)
-//                        imagePosterMovie.loadImage(it.posterPath, progressDrawable)
-//                        tvNameOfMovie.text = it.title
-//                        tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
-//                        tvAboutMovie.text = it.overview
-//                        tvStudioName.text = it.production_companies?.get(0)?.name
-//                        tvGenreName.text = it.genres?.get(0)?.name
-//                        tvYearMovieMade.text = it.release_date
-//                    }
-//                }
-//            }
-//            override fun onFailure(call: Call<DetailMovieResponse>, t: Throwable) {
-//                Timber.e(t.stackTraceToString())
-//            }
-//
-//        })
 
+        //получение списка актеров
         val getMovieCast = MovieApiClient.apiClient.getMovieCast(movieId)
-        getMovieCast.enqueue(object: Callback<MovieCast>{
-            override fun onResponse(call: Call<MovieCast>, response: Response<MovieCast>) {
-               val dataCast = response.body()?.cast
-                dataCast?.let{castItem->
-                   adapter.apply {
-                       addAll(
-                           castItem.map{
-                               it?.let { it1 -> ActorCardContainer(it1, requireActivity()) }
-                           }.toList()
-                       )
-                   }
+        getMovieCast
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {dataMovieCast->
+                    val itemCast = dataMovieCast.cast
+                    itemCast?.let { item->
+                        adapter.apply {
+                            addAll(
+                                item.map{
+                                    it?.let { it1 -> ActorCardContainer(it1, requireActivity()) }
+                                }.toList()
+                            )
+                        }
+                    }
+                    binding.rvActorsOfTheMovie.adapter = adapter
+                },
+                {error->
+                    Log.e("error apiCast:", error.stackTraceToString())
                 }
-                binding.rvActorsOfTheMovie.adapter = adapter
-            }
-
-            override fun onFailure(call: Call<MovieCast>, t: Throwable) {
-                Log.e("error apiCast:", t.stackTraceToString())
-            }
-
-        })
+            )
     }
 
     override fun onDestroy() {
