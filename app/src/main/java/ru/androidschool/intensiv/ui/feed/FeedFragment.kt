@@ -3,6 +3,7 @@ package ru.androidschool.intensiv.ui.feed
 import android.annotation.SuppressLint
 import android.database.Observable
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -65,32 +66,44 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
 
         searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
-            Timber.d(it.toString())
+            Timber.e(it.toString())
             if (it.toString().length > MIN_LENGTH) {
-                openSearch(it.toString())
+                //openSearch(it.toString())
             }
         }
 
-        val test = io.reactivex.Observable.create(ObservableOnSubscribe<String> {emitter->
+        // P.S Сделал как смог=) хочу понять как лучше
+        val observableEditText = io.reactivex.Observable.create(ObservableOnSubscribe<String> {emitter->
             searchBinding.searchToolbar.binding.searchEditText.addTextChangedListener(object: TextWatcher{
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                }
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-                }
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                 override fun afterTextChanged(p0: Editable?) {
                     emitter.onNext("$p0")
-//                    emitter.onNext("Kotlin")
-//                    emitter.onNext("Cpp")
-//                    emitter.onNext("JavaScript")
+
+                    //проверка на наличие больше 3 символов
+                    if(searchBinding.searchToolbar.binding.searchEditText.text.toString().length > 3) {
+                        Log.e("check count", "текст больше 3 символов")
+                        val modifyTextValue = p0.toString().replace(" ", "")
+                        //timer
+                        val timer = object: CountDownTimer(500, 500) {
+                            override fun onTick(millisUntilFinished: Long) {
+                                Log.e("timer", "$millisUntilFinished")
+                            }
+
+                            override fun onFinish() {
+                                Log.e("onFinish", "Отправляй запрос!")
+                                Log.e("onFinish", "$modifyTextValue")
+                            }
+                        }
+                        timer.start()
+                    }
+
                 }
 
             })
         })
-        test.subscribe(object: Observer<String> {
+        observableEditText.subscribe(object: Observer<String> {
             override fun onSubscribe(d: Disposable) {
                 Log.e("FeedFrag OnSubscribe:", "${Thread.currentThread().name}")
             }
