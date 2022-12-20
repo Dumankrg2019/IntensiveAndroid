@@ -1,6 +1,5 @@
 package ru.androidschool.intensiv.network
 
-import android.os.Debug
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -9,7 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.androidschool.intensiv.BuildConfig
 
 object MovieApiClient {
-    private const val BASE_URL = "https://api.themoviedb.org/3/"
 
     private var client: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {

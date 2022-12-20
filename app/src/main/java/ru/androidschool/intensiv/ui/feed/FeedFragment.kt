@@ -1,7 +1,10 @@
 package ru.androidschool.intensiv.ui.feed
 
 import android.annotation.SuppressLint
+import android.database.Observable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -9,21 +12,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.annotations.Async
-import ru.androidschool.intensiv.BuildConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.response.Movie
-import ru.androidschool.intensiv.data.response.MovieResponse
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.afterTextChanged
 import timber.log.Timber
+import io.reactivex.Observable.create
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
 
@@ -69,6 +70,44 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                 openSearch(it.toString())
             }
         }
+
+        val test = io.reactivex.Observable.create(ObservableOnSubscribe<String> {emitter->
+            searchBinding.searchToolbar.binding.searchEditText.addTextChangedListener(object: TextWatcher{
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+                    emitter.onNext("$p0")
+//                    emitter.onNext("Kotlin")
+//                    emitter.onNext("Cpp")
+//                    emitter.onNext("JavaScript")
+                }
+
+            })
+        })
+        test.subscribe(object: Observer<String> {
+            override fun onSubscribe(d: Disposable) {
+                Log.e("FeedFrag OnSubscribe:", "${Thread.currentThread().name}")
+            }
+
+            override fun onNext(t: String) {
+                Log.e("FeedFrag OnNext:", "$t")
+            }
+
+            override fun onError(e: Throwable) {
+                Log.e("FeedFrag OnError:", "$e")
+            }
+
+            override fun onComplete() {
+                Log.e("FeedFrag onComplete:", "OnComplete")
+            }
+
+        })
 
         val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
 
