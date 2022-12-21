@@ -12,8 +12,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import io.reactivex.ObservableOnSubscribe
-
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableOnSubscribe
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.BiFunction
+import io.reactivex.rxjava3.functions.Function3
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.response.Movie
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
@@ -21,10 +27,8 @@ import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.afterTextChanged
 import timber.log.Timber
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.androidschool.intensiv.data.response.CommonFeedQuery
+import ru.androidschool.intensiv.data.response.MovieResponse
 
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
@@ -73,7 +77,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         }
 
         // P.S Сделал как смог=) хочу понять как лучше
-        val observableEditText = io.reactivex.Observable.create(ObservableOnSubscribe<String> {emitter->
+        val observableEditText = Observable.create(ObservableOnSubscribe<String> { emitter->
             searchBinding.searchToolbar.binding.searchEditText.addTextChangedListener(object: TextWatcher{
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -122,32 +126,25 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
         })
 
-//        val pop = MovieApiClient.apiClient.getPopularMovies()
-//        val upcoming = MovieApiClient.apiClient.getUpComingMovies()
-//        val rated = MovieApiClient.apiClient.getTopRatedMovies()
-//        io.reactivex.Observable.zip(upcoming, pop, rated,
-//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery>{pop, upcoming,rated->
-//              CommonFeedQuery(pop,upcoming,rated)
+        val pop = MovieApiClient.apiClient.getPopularMovies()
+        val upcoming = MovieApiClient.apiClient.getUpComingMovies()
+        val rated = MovieApiClient.apiClient.getTopRatedMovies()
+//        Observable.zip(upcoming, pop, rated,
+//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming, rated->
+//              return@Function3 CommonFeedQuery(pop,upcoming,rated)
 //            }
 //        )
-//
-//        Observable.zip(upcoming, pop, rated,
-//            // Используется для объединения данных
-//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming,rated->
-//                CommonFeedQuery(pop,upcoming,rated)
-//            })
-//            // Подписываемся чтобы получить данные
-//            .subscribe { s -> println(s) }
 
-
-        val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
-
-        getUpComingMovie
-            .subscribeOn(Schedulers.io())
+        Observable.zip(pop, upcoming,
+            BiFunction<MovieResponse, MovieResponse, CommonFeedQuery> { t1, t2 ->
+                return@BiFunction CommonFeedQuery(t1, t2)
+            }).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                {dataMovie->
-                    val upcomingMovies = dataMovie.results
+                {data->
+                    val poplarMovies = data.popular.results
+                    val upcomingMovies = data.upcoming.results
+                    Log.e("data zip:", "work")
                     upcomingMovies?.let { it ->
                         val listOfMovie = listOf(
                             MainCardContainer(
@@ -159,32 +156,16 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                                 }.toList()
                             )
                         )
-
                         binding.moviesRecyclerView.adapter =
                             adapter.apply {
                                 addAll(listOfMovie)
                             }
-
                     }
-                },
-                {error->
-                    Timber.e(error.stackTraceToString())
-                }
-            )
-
-        //второй запрос
-        val getPopularMovies = MovieApiClient.apiClient.getPopularMovies()
-        getPopularMovies
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {popularMovie->
-                    val popularMovies = popularMovie.results
-                    popularMovies?.let { it->
+                    poplarMovies?.let { it->
                         val listViewOfPopular = listOf(
                             MainCardContainer(
                                 R.string.popular,
-                                popularMovies.map { it2->
+                                poplarMovies.map { it2->
                                     MovieItem(it2!!) {movie->
                                         openMovieDetails(movie)
                                     }
@@ -193,38 +174,108 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                         )
                         adapter.apply { addAll(listViewOfPopular) }
                     }
+
                 },
                 {error->
-                    Log.e("error from", " popularMovie:${error.stackTraceToString()}")
+                    Log.e("error zipp:", "${error}")
                 }
             )
+
+
+//        Observable.zip(upcoming, pop, rated,
+//            // Используется для объединения данных
+//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming,rated->
+//                CommonFeedQuery(pop,upcoming,rated)
+//            })
+//            // Подписываемся чтобы получить данные
+//            .subscribe { s -> println(s) }
+
+
+        val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
+
+//        getUpComingMovie
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                {dataMovie->
+//                    val upcomingMovies = dataMovie.results
+//                    upcomingMovies?.let { it ->
+//                        val listOfMovie = listOf(
+//                            MainCardContainer(
+//                                R.string.upcoming,
+//                                upcomingMovies.map { it2->
+//                                    MovieItem(it2!!) {movie->
+//                                        openMovieDetails(movie)
+//                                    }
+//                                }.toList()
+//                            )
+//                        )
+//
+//                        binding.moviesRecyclerView.adapter =
+//                            adapter.apply {
+//                                addAll(listOfMovie)
+//                            }
+//
+//                    }
+//                },
+//                {error->
+//                    Timber.e(error.stackTraceToString())
+//                }
+//            )
+
+        //второй запрос
+        val getPopularMovies = MovieApiClient.apiClient.getPopularMovies()
+//        getPopularMovies
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                {popularMovie->
+//                    val popularMovies = popularMovie.results
+//                    popularMovies?.let { it->
+//                        val listViewOfPopular = listOf(
+//                            MainCardContainer(
+//                                R.string.popular,
+//                                popularMovies.map { it2->
+//                                    MovieItem(it2!!) {movie->
+//                                        openMovieDetails(movie)
+//                                    }
+//                                }.toList()
+//                            )
+//                        )
+//                        adapter.apply { addAll(listViewOfPopular) }
+//                    }
+//                },
+//                {error->
+//                    Log.e("error from", " popularMovie:${error.stackTraceToString()}")
+//                }
+//            )
         //3 запрос
         //второй запрос
-        val getTopRatedMovies = MovieApiClient.apiClient.getTopRatedMovies()
-        getTopRatedMovies
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {topRatedMovie->
-                    val topRatedMovies = topRatedMovie.results
-                    topRatedMovies?.let { it->
-                        val listViewOfPopular = listOf(
-                            MainCardContainer(
-                                R.string.topRated,
-                                topRatedMovies.map { it2->
-                                    MovieItem(it2!!) {movie->
-                                        openMovieDetails(movie)
-                                    }
-                                }.toList()
-                            )
-                        )
-                        adapter.apply { addAll(listViewOfPopular) }
-                    }
-                },
-                {error->
-                    Log.e("error from", " popularMovie:${error.stackTraceToString()}")
-                }
-            )
+//        val getTopRatedMovies = MovieApiClient.apiClient.getTopRatedMovies()
+//        getTopRatedMovies
+//            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                {topRatedMovie->
+//                    val topRatedMovies = topRatedMovie.results
+//                    topRatedMovies?.let { it->
+//                        val listViewOfPopular = listOf(
+//                            MainCardContainer(
+//                                R.string.topRated,
+//                                topRatedMovies.map { it2->
+//                                    MovieItem(it2!!) {movie->
+//                                        openMovieDetails(movie)
+//                                    }
+//                                }.toList()
+//                            )
+//                        )
+//                        adapter.apply { addAll(listViewOfPopular) }
+//                    }
+//                },
+//                {error->
+//                    Log.e("error from", " popularMovie:${error.stackTraceToString()}")
+//                }
+//            )
     }
 
     private fun openMovieDetails(movie: Movie) {
