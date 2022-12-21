@@ -1,7 +1,6 @@
 package ru.androidschool.intensiv.ui.feed
 
 import android.annotation.SuppressLint
-import android.database.Observable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -14,8 +13,7 @@ import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.response.Movie
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
@@ -23,9 +21,11 @@ import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.afterTextChanged
 import timber.log.Timber
-import io.reactivex.Observable.create
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
 
@@ -122,6 +122,24 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
         })
 
+//        val pop = MovieApiClient.apiClient.getPopularMovies()
+//        val upcoming = MovieApiClient.apiClient.getUpComingMovies()
+//        val rated = MovieApiClient.apiClient.getTopRatedMovies()
+//        io.reactivex.Observable.zip(upcoming, pop, rated,
+//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery>{pop, upcoming,rated->
+//              CommonFeedQuery(pop,upcoming,rated)
+//            }
+//        )
+//
+//        Observable.zip(upcoming, pop, rated,
+//            // Используется для объединения данных
+//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming,rated->
+//                CommonFeedQuery(pop,upcoming,rated)
+//            })
+//            // Подписываемся чтобы получить данные
+//            .subscribe { s -> println(s) }
+
+
         val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
 
         getUpComingMovie
@@ -167,6 +185,33 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                             MainCardContainer(
                                 R.string.popular,
                                 popularMovies.map { it2->
+                                    MovieItem(it2!!) {movie->
+                                        openMovieDetails(movie)
+                                    }
+                                }.toList()
+                            )
+                        )
+                        adapter.apply { addAll(listViewOfPopular) }
+                    }
+                },
+                {error->
+                    Log.e("error from", " popularMovie:${error.stackTraceToString()}")
+                }
+            )
+        //3 запрос
+        //второй запрос
+        val getTopRatedMovies = MovieApiClient.apiClient.getTopRatedMovies()
+        getTopRatedMovies
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {topRatedMovie->
+                    val topRatedMovies = topRatedMovie.results
+                    topRatedMovies?.let { it->
+                        val listViewOfPopular = listOf(
+                            MainCardContainer(
+                                R.string.topRated,
+                                topRatedMovies.map { it2->
                                     MovieItem(it2!!) {movie->
                                         openMovieDetails(movie)
                                     }

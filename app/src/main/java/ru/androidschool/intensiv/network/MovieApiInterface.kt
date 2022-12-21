@@ -19,6 +19,10 @@ interface MovieApiInterface {
     @GET("movie/popular")
     fun getPopularMovies(@Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
                           @Query("language") language: String = "ru"): Single<MovieResponse>
+    @GET("movie/top_rated")
+    fun getTopRatedMovies(@Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
+                         @Query("language") language: String = "ru"): Single<MovieResponse>
+
 
     @GET("movie/{movie_id}")
     fun getDetailMovie(@Path("movie_id")  movie_id: Int,
