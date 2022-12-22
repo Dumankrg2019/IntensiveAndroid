@@ -1,6 +1,7 @@
 package ru.androidschool.intensiv.ui.feed
 
 import android.annotation.SuppressLint
+import android.icu.util.TimeUnit
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -78,35 +79,54 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
         // P.S Сделал как смог=) хочу понять как лучше
         val observableEditText = Observable.create(ObservableOnSubscribe<String> { emitter->
-            searchBinding.searchToolbar.binding.searchEditText.addTextChangedListener(object: TextWatcher{
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                override fun afterTextChanged(p0: Editable?) {
-                    emitter.onNext("$p0")
-
-                    //проверка на наличие больше 3 символов
-                    if(searchBinding.searchToolbar.binding.searchEditText.text.toString().length > 3) {
-                        Log.e("check count", "текст больше 3 символов")
-                        val modifyTextValue = p0.toString().replace(" ", "")
-                        //timer
-                        val timer = object: CountDownTimer(500, 500) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                Log.e("timer", "$millisUntilFinished")
-                            }
-
-                            override fun onFinish() {
-                                Log.e("onFinish", "Отправляй запрос!")
-                                Log.e("onFinish", "$modifyTextValue")
-                            }
-                        }
-                        timer.start()
-                    }
-
-                }
-
-            })
+//            searchBinding.searchToolbar.binding.searchEditText.addTextChangedListener(object: TextWatcher{
+//                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+//
+//                override fun afterTextChanged(p0: Editable?) {
+//                    emitter.onNext("$p0")
+//
+//                    //проверка на наличие больше 3 символов
+//                    if(searchBinding.searchToolbar.binding.searchEditText.text.toString().length > 3) {
+//                        Log.e("check count", "текст больше 3 символов")
+//                        val modifyTextValue = p0.toString().replace(" ", "")
+//                        //timer
+//                        val timer = object: CountDownTimer(500, 500) {
+//                            override fun onTick(millisUntilFinished: Long) {
+//                                Log.e("timer", "$millisUntilFinished")
+//                            }
+//
+//                            override fun onFinish() {
+//                                Log.e("onFinish", "Отправляй запрос!")
+//                                Log.e("onFinish", "$modifyTextValue")
+//                            }
+//                        }
+//                        timer.start()
+//                    }
+//
+//                }
+//
+//            })
         })
+            .debounce(500, java.util.concurrent.TimeUnit.MICROSECONDS)
+//            .subscribe(
+//                {queryValue->
+//                    searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
+//                        if(it != null) {
+//                            if(it.length > 3) {
+//                                Log.e("check count", "текст больше 3 символов")
+//                                val modifyTextValue = it.toString().replace(" ", "")
+//                                Log.e("onFinish", "Отправляй запрос!")
+//                            }
+//                        }
+//
+//                    }
+//                },
+//                {error->
+//                    Log.e("Error from debounce", "$error")
+//                }
+//            )
+        
         observableEditText.subscribe(object: Observer<String> {
             override fun onSubscribe(d: Disposable) {
                 Log.e("FeedFrag OnSubscribe:", "${Thread.currentThread().name}")
@@ -114,6 +134,16 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
             override fun onNext(t: String) {
                 Log.e("FeedFrag OnNext:", "$t")
+                searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
+                    if(it != null) {
+                        if(it.length > 3) {
+                            Log.e("check count", "текст больше 3 символов")
+                            val modifyTextValue = it.toString().replace(" ", "")
+                            Log.e("onFinish", "Отправляй запрос!")
+                        }
+                    }
+
+                }
             }
 
             override fun onError(e: Throwable) {
@@ -129,21 +159,20 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         val pop = MovieApiClient.apiClient.getPopularMovies()
         val upcoming = MovieApiClient.apiClient.getUpComingMovies()
         val rated = MovieApiClient.apiClient.getTopRatedMovies()
-//        Observable.zip(upcoming, pop, rated,
-//            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming, rated->
-//              return@Function3 CommonFeedQuery(pop,upcoming,rated)
-//            }
-//        )
-
-        Observable.zip(pop, upcoming,
-            BiFunction<MovieResponse, MovieResponse, CommonFeedQuery> { t1, t2 ->
-                return@BiFunction CommonFeedQuery(t1, t2)
-            }).subscribeOn(Schedulers.io())
+        Observable.zip(upcoming, pop, rated,
+            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming, rated->
+              return@Function3 CommonFeedQuery(pop,upcoming,rated)
+            }
+        )
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe{ binding.progressBarFeedFrag.visibility = View.VISIBLE }
+            .doFinally{ binding.progressBarFeedFrag.visibility = View.GONE }
             .subscribe(
                 {data->
                     val poplarMovies = data.popular.results
                     val upcomingMovies = data.upcoming.results
+                    val topRatedMovies = data.topRated.results
                     Log.e("data zip:", "work")
                     upcomingMovies?.let { it ->
                         val listOfMovie = listOf(
@@ -175,11 +204,70 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                         adapter.apply { addAll(listViewOfPopular) }
                     }
 
+                    topRatedMovies?.let {
+                        val listViewOfPopular = listOf(
+                            MainCardContainer(
+                                R.string.topRated,
+                                topRatedMovies.map { it2 ->
+                                    MovieItem(it2!!) { movie ->
+                                        openMovieDetails(movie)
+                                    }
+                                }.toList()
+                            )
+                        )
+                        adapter.apply { addAll(listViewOfPopular) }
+                    }
                 },
                 {error->
                     Log.e("error zipp:", "${error}")
                 }
             )
+
+//        Observable.zip(pop, upcoming,
+//            BiFunction<MovieResponse, MovieResponse, CommonFeedQuery> { t1, t2 ->
+//                return@BiFunction CommonFeedQuery(t1, t2)
+//            }).subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                {data->
+//                    val poplarMovies = data.popular.results
+//                    val upcomingMovies = data.upcoming.results
+//                    Log.e("data zip:", "work")
+//                    upcomingMovies?.let { it ->
+//                        val listOfMovie = listOf(
+//                            MainCardContainer(
+//                                R.string.upcoming,
+//                                upcomingMovies.map { it2->
+//                                    MovieItem(it2!!) {movie->
+//                                        openMovieDetails(movie)
+//                                    }
+//                                }.toList()
+//                            )
+//                        )
+//                        binding.moviesRecyclerView.adapter =
+//                            adapter.apply {
+//                                addAll(listOfMovie)
+//                            }
+//                    }
+//                    poplarMovies?.let { it->
+//                        val listViewOfPopular = listOf(
+//                            MainCardContainer(
+//                                R.string.popular,
+//                                poplarMovies.map { it2->
+//                                    MovieItem(it2!!) {movie->
+//                                        openMovieDetails(movie)
+//                                    }
+//                                }.toList()
+//                            )
+//                        )
+//                        adapter.apply { addAll(listViewOfPopular) }
+//                    }
+//
+//                },
+//                {error->
+//                    Log.e("error zipp:", "${error}")
+//                }
+//            )
 
 
 //        Observable.zip(upcoming, pop, rated,

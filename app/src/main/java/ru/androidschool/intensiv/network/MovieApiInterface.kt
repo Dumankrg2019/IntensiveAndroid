@@ -22,7 +22,7 @@ interface MovieApiInterface {
                           @Query("language") language: String = "ru"): Observable<MovieResponse>
     @GET("movie/top_rated")
     fun getTopRatedMovies(@Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DATABASE_API,
-                         @Query("language") language: String = "ru"): Single<MovieResponse>
+                         @Query("language") language: String = "ru"): Observable<MovieResponse>
 
 
     @GET("movie/{movie_id}")
