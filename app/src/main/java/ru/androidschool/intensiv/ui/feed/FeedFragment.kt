@@ -74,27 +74,9 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
             Timber.e(it.toString())
             if (it.toString().length > MIN_LENGTH) {
-                //openSearch(it.toString())
+                openSearch(it.toString())
             }
         }
-
-
-        searchBinding.searchToolbar.binding.searchEditText.textChanges()
-            .debounce(500, java.util.concurrent.TimeUnit.MILLISECONDS)
-            .subscribe(
-                {
-                    if(it != null) {
-                        if(it.length > MIN_LENGTH) {
-                            Log.e("check count", "текст больше 3 символов")
-                            val modifyTextValue = it.toString().replace(" ", "")
-                            Log.e("onFinish", "$modifyTextValue\nОтправляй запрос!")
-                        }
-                    }
-                },
-                {error->
-                    Log.e("error Debounce:", "$error")
-                }
-            )
 
         val pop = MovieApiClient.apiClient.getPopularMovies()
         val upcoming = MovieApiClient.apiClient.getUpComingMovies()
@@ -114,49 +96,11 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                     val upcomingMovies = data.upcoming.results
                     val topRatedMovies = data.topRated.results
                     Log.e("data zip:", "work")
-                    upcomingMovies?.let { it ->
-                        val listOfMovie = listOf(
-                            MainCardContainer(
-                                R.string.upcoming,
-                                upcomingMovies.map { it2->
-                                    MovieItem(it2!!) {movie->
-                                        openMovieDetails(movie)
-                                    }
-                                }.toList()
-                            )
-                        )
-                        binding.moviesRecyclerView.adapter =
-                            adapter.apply {
-                                addAll(listOfMovie)
-                            }
-                    }
-                    poplarMovies?.let { it->
-                        val listViewOfPopular = listOf(
-                            MainCardContainer(
-                                R.string.popular,
-                                poplarMovies.map { it2->
-                                    MovieItem(it2!!) {movie->
-                                        openMovieDetails(movie)
-                                    }
-                                }.toList()
-                            )
-                        )
-                        adapter.apply { addAll(listViewOfPopular) }
-                    }
 
-                    topRatedMovies?.let {
-                        val listViewOfPopular = listOf(
-                            MainCardContainer(
-                                R.string.topRated,
-                                topRatedMovies.map { it2 ->
-                                    MovieItem(it2!!) { movie ->
-                                        openMovieDetails(movie)
-                                    }
-                                }.toList()
-                            )
-                        )
-                        adapter.apply { addAll(listViewOfPopular) }
-                    }
+                    getListOfMovie(upcomingMovies, R.string.upcoming, true)
+                    getListOfMovie(poplarMovies, R.string.popular)
+                    getListOfMovie(topRatedMovies, R.string.topRated)
+
                 },
                 {error->
                     Log.e("error zipp:", "${error}")
@@ -165,6 +109,28 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
     }
 
+    private fun getListOfMovie(list: List<Movie?>?, title: Int, firstShowAdapter: Boolean = false) {
+        list?.let {
+            val listViewOfMovie = listOf(
+                MainCardContainer(
+                    title,
+                    list.map { it2 ->
+                        MovieItem(it2!!) { movie ->
+                            openMovieDetails(movie)
+                        }
+                    }.toList()
+                )
+            )
+            if(firstShowAdapter) {
+                binding.moviesRecyclerView.adapter =
+                            adapter.apply {
+                                addAll(listViewOfMovie)
+                            }
+            } else {
+                adapter.apply { addAll(listViewOfMovie) }
+            }
+        }
+    }
     private fun openMovieDetails(movie: Movie) {
         val bundle = Bundle()
         bundle.putString(KEY_TITLE, movie.title)

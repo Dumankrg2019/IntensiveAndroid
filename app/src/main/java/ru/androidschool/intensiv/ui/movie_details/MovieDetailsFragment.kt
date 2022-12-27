@@ -50,17 +50,10 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
         Log.e("from DetailMovie", "$movieId")
 
-        //вставил эту проверку из-за ошибка(со стэковерфлоу), которая происходила в этом запросе
-        val SDK_INT = Build.VERSION.SDK_INT
-        if (SDK_INT > 8) {
-            val policy = ThreadPolicy.Builder()
-                .permitAll().build()
-            StrictMode.setThreadPolicy(policy)
-        }
         //получение инфо о фильме
         val getDetailMovie =  MovieApiClient.apiClient.getDetailMovie(movieId!!)
         getDetailMovie
-            .observeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {dataMovieDetail->
