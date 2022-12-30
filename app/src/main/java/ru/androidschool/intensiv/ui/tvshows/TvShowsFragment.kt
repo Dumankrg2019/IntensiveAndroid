@@ -1,5 +1,6 @@
 package ru.androidschool.intensiv.ui.tvshows
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,13 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.androidschool.intensiv.BuildConfig
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.MockRepository
-import ru.androidschool.intensiv.data.response.tv_shows.TvShowResponse
 import ru.androidschool.intensiv.databinding.TvShowsFragmentBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 
@@ -38,33 +35,34 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
     }
 
 
+    @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
         val getTvShows = MovieApiClient.apiClient.getTvShows()
-        getTvShows.enqueue(object: Callback<TvShowResponse> {
-            override fun onResponse(
-                call: Call<TvShowResponse>,
-                response: Response<TvShowResponse>
-            ) {
-                val tvShowData = response.body()?.results
-                tvShowData?.let {
+
+        //запрос а список сериалов Rx
+        getTvShows
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {dataTvShows->
+                    val dataTvShowItem = dataTvShows.results
+                    dataTvShowItem?.let {
                         adapter.apply {
-                                addAll(it.map { it2->
-                                    it2?.let { it1 -> TvShowCardContainer(it1, requireActivity()) }
-                                }.toList()
+                            addAll(it.map { it2->
+                                it2?.let { it1 -> TvShowCardContainer(it1, requireActivity()) }
+                            }.toList()
                             )
                         }
+                    }
+                    binding.rvTvShows.adapter = adapter
+                },
+                {error->
+                    Log.e("Error getTvShows: ", error.stackTraceToString())
                 }
-                binding.rvTvShows.adapter = adapter
-            }
-
-            override fun onFailure(call: Call<TvShowResponse>, t: Throwable) {
-                Log.e("Error getTvShows: ", t.stackTraceToString())
-            }
-
-        })
+            )
     }
 
     override fun onDestroyView() {

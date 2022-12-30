@@ -1,25 +1,37 @@
 package ru.androidschool.intensiv.ui.feed
 
+import android.annotation.SuppressLint
+import android.icu.util.TimeUnit
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
+import com.jakewharton.rxbinding4.widget.textChanges
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import ru.androidschool.intensiv.BuildConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableOnSubscribe
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.BiFunction
+import io.reactivex.rxjava3.functions.Function3
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.response.Movie
-import ru.androidschool.intensiv.data.response.MovieResponse
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.afterTextChanged
 import timber.log.Timber
+import ru.androidschool.intensiv.data.response.CommonFeedQuery
+import ru.androidschool.intensiv.data.response.MovieResponse
+
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
 
@@ -54,73 +66,71 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         return binding.root
     }
 
+    @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
 
         searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
-            Timber.d(it.toString())
+            Timber.e(it.toString())
             if (it.toString().length > MIN_LENGTH) {
                 openSearch(it.toString())
             }
         }
 
-        val getUpComingMovie = MovieApiClient.apiClient.getUpComingMovies()
-        getUpComingMovie.enqueue(object: Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                    val upcomingMovies = response.body()?.results
-                upcomingMovies?.let { it ->
-                    val listOfMovie = listOf(
-                        MainCardContainer(
-                            R.string.upcoming,
-                            upcomingMovies.map { it2->
-                                MovieItem(it2!!) {movie->
-                                    openMovieDetails(movie)
-                                }
-                            }.toList()
-                        )
-                    )
+        val pop = MovieApiClient.apiClient.getPopularMovies()
+        val upcoming = MovieApiClient.apiClient.getUpComingMovies()
+        val rated = MovieApiClient.apiClient.getTopRatedMovies()
+        Observable.zip(upcoming, pop, rated,
+            Function3<MovieResponse, MovieResponse,MovieResponse, CommonFeedQuery> { pop, upcoming, rated->
+              return@Function3 CommonFeedQuery(pop,upcoming,rated)
+            }
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe{ binding.progressBarFeedFrag.visibility = View.VISIBLE }
+            .doFinally{ binding.progressBarFeedFrag.visibility = View.GONE }
+            .subscribe(
+                {data->
+                    val poplarMovies = data.popular.results
+                    val upcomingMovies = data.upcoming.results
+                    val topRatedMovies = data.topRated.results
+                    Log.e("data zip:", "work")
 
-                    binding.moviesRecyclerView.adapter =
-                        adapter.apply {
-                            addAll(listOfMovie)
-                        }
+                    getListOfMovie(upcomingMovies, R.string.upcoming, true)
+                    getListOfMovie(poplarMovies, R.string.popular)
+                    getListOfMovie(topRatedMovies, R.string.topRated)
 
+                },
+                {error->
+                    Log.e("error zipp:", "${error}")
                 }
-            }
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Timber.e(t.stackTraceToString())
-            }
+            )
 
-        })
-
-        //второй запрос
-        val getPopularMovies = MovieApiClient.apiClient.getPopularMovies()
-        getPopularMovies.enqueue(object: Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-               val popularMovies = response.body()?.results
-                popularMovies?.let { it->
-                    val listViewOfPopular = listOf(
-                        MainCardContainer(
-                            R.string.popular,
-                            popularMovies.map { it2->
-                                MovieItem(it2!!) {movie->
-                                    openMovieDetails(movie)
-                                }
-                            }.toList()
-                        )
-                    )
-                    adapter.apply { addAll(listViewOfPopular) }
-                }
-            }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                Timber.e(t.stackTraceToString())
-            }
-
-        })
     }
 
+    private fun getListOfMovie(list: List<Movie?>?, title: Int, firstShowAdapter: Boolean = false) {
+        list?.let {
+            val listViewOfMovie = listOf(
+                MainCardContainer(
+                    title,
+                    list.map { it2 ->
+                        MovieItem(it2!!) { movie ->
+                            openMovieDetails(movie)
+                        }
+                    }.toList()
+                )
+            )
+            if(firstShowAdapter) {
+                binding.moviesRecyclerView.adapter =
+                            adapter.apply {
+                                addAll(listViewOfMovie)
+                            }
+            } else {
+                adapter.apply { addAll(listViewOfMovie) }
+            }
+        }
+    }
     private fun openMovieDetails(movie: Movie) {
         val bundle = Bundle()
         bundle.putString(KEY_TITLE, movie.title)

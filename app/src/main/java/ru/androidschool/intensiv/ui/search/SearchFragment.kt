@@ -1,10 +1,12 @@
 package ru.androidschool.intensiv.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import io.reactivex.rxjava3.disposables.Disposable
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.databinding.FragmentSearchBinding
@@ -34,9 +36,18 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         super.onViewCreated(view, savedInstanceState)
         val searchTerm = requireArguments().getString(KEY_SEARCH)
         searchBinding.searchToolbar.setText(searchTerm)
+
+        if (searchTerm != null) {
+            searchBinding.searchToolbar.setText(searchTerm)
+        }
+//        val disposable: Disposable =
+//            searchBinding.searchToolbar.onTextChangedWithOperatorObservable{
+//                val text = searchBinding.searchToolbar.binding.searchEditText.text
+//            }
     }
 
     override fun onDestroyView() {
+
         super.onDestroyView()
         _binding = null
         _searchBinding = null

@@ -18,8 +18,6 @@ fun getProgressDrawable(context: Context): CircularProgressDrawable {
 }
 
 fun ImageView.loadImage(uri: String?, progressDrawable: CircularProgressDrawable, customImg: Boolean = false,) {
-
-
     ContextCompat.getDrawable(context, R.drawable.ic_error_img)?.let {
         when(customImg) {
             true -> ContextCompat.getDrawable(context, R.drawable.ic_noperson)

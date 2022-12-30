@@ -49,6 +49,10 @@ ext {
 
     retrofit2Version = '2.9.0'
     gsonVersion = '2.8.9'
-    adapterRxJava = '2.4.0'
+    adapterRxJava = '2.9.0'
     loggingInterceptorOkHTTP = '4.5.0'
+
+    rxAndroidVersion = '3.0.2'
+    rxJavaVersion = '3.1.5'
+    rxBindingVersion = '4.0.0'
 }

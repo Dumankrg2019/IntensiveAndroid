@@ -20,6 +20,7 @@ android {
         buildConfigField 'String', 'THE_MOVIE_DATABASE_API', keystoreProperties['THE_MOVIE_DATABASE_API']
         buildConfigField "String", 'BASE_URL', "\"https://api.themoviedb.org/3/\""
         buildConfigField "String", 'BASE_IMAGE_URL', "\"https://image.tmdb.org/t/p/w500\""
+        buildConfigField "String", 'BASE_LANGUAGE', "\"ru\""
     }
     buildTypes {
         release {
@@ -82,6 +83,11 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofit2Version"
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.adapterRxJava"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$rootProject.adapterRxJava"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.loggingInterceptorOkHTTP"
+
+    //RxJava
+    implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
+    implementation "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"
+    implementation "com.jakewharton.rxbinding4:rxbinding-material:$rootProject.rxBindingVersion"
 }
