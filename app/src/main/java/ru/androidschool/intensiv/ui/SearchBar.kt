@@ -72,24 +72,24 @@ class SearchBar @JvmOverloads constructor(
         binding.deleteTextButton.setOnClickListener {
             binding.searchEditText.text.clear()
         }
-        binding.searchEditText.textChanges()
-            .debounce(timeOfPause, java.util.concurrent.TimeUnit.MILLISECONDS)
-                //не понял как сделать через filter((
-            .subscribe(
-                {
-                    if(it != null) {
-                        if(it.length > FeedFragment.MIN_LENGTH) {
-                            Log.e("check count", "текст больше 3 символов")
-                            val modifyTextValue = it.toString().replace(" ", "")
-                            Log.e("onFinish", "$modifyTextValue\nОтправляй запрос!")
-                            val getSearchResult = MovieApiClient.apiClient.getSearchResult(query = it.toString())
-                        }
-                    }
-                },
-                {error->
-                    Log.e("error Debounce:", "$error")
-                }
-            )
+//        binding.searchEditText.textChanges()
+//            .debounce(timeOfPause, java.util.concurrent.TimeUnit.MILLISECONDS)
+//                //не понял как сделать через filter((
+//            .subscribe(
+//                {
+//                    if(it != null) {
+//                        if(it.length > FeedFragment.MIN_LENGTH) {
+//                            Log.e("check count", "текст больше 3 символов")
+//                            val modifyTextValue = it.toString().replace(" ", "")
+//                            Log.e("onFinish", "$modifyTextValue\nОтправляй запрос!")
+//                            val getSearchResult = MovieApiClient.apiClient.getSearchResult(query = it.toString())
+//                        }
+//                    }
+//                },
+//                {error->
+//                    Log.e("error Debounce:", "$error")
+//                }
+//            )
     }
 
     override fun onAttachedToWindow() {

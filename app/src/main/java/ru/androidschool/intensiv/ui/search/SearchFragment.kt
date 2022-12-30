@@ -40,10 +40,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         if (searchTerm != null) {
             searchBinding.searchToolbar.setText(searchTerm)
         }
-        val disposable: Disposable =
-            searchBinding.searchToolbar.onTextChangedWithOperatorObservable{
-                val text = searchBinding.searchToolbar.binding.searchEditText.text
-            }
+//        val disposable: Disposable =
+//            searchBinding.searchToolbar.onTextChangedWithOperatorObservable{
+//                val text = searchBinding.searchToolbar.binding.searchEditText.text
+//            }
     }
 
     override fun onDestroyView() {
