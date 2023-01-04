@@ -14,8 +14,13 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.MockRepository
+import ru.androidschool.intensiv.data.response.Movie
+import ru.androidschool.intensiv.data.response.detail_movie.DetailMovieResponse
+import ru.androidschool.intensiv.data.room.likely_movies.LikelyMovie
+import ru.androidschool.intensiv.data.room.likely_movies.LikelyMovieDatabase
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.util.getProgressDrawable
@@ -31,6 +36,8 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         GroupAdapter<GroupieViewHolder>()
     }
 
+    var dataDetail: DetailMovieResponse? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +51,11 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //не поулчилось передать контекст приложения.
+        // По примерам делал с помощью liveData и вьюмодели. Текущий вариант реализации неудачный
+        val dbLikeMovie = LikelyMovieDatabase.get(requireActivity()).likeMovieDao()
+
         val data = MockRepository.getInfoAboutMovie()
 
         val movieId = arguments?.getInt("movie_id")
@@ -58,6 +70,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             .subscribe(
                 {dataMovieDetail->
                     dataMovieDetail?.let {
+                        dataDetail = it
                         binding.pbDetailMovie.visibility = View.GONE
                         val progressDrawable = getProgressDrawable(requireActivity())
                         dataMovieDetail.let {item->
@@ -102,6 +115,23 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                     Log.e("error apiCast:", error.stackTraceToString())
                 }
             )
+
+        binding.chbLike.setOnCheckedChangeListener {btn, isChecked->
+            if(isChecked) {
+                Log.e("like:", "like")
+                val currentMovie = LikelyMovie(
+                    binding.tvAboutMovie.text.toString(),
+                    binding.tvYearMovieMade.text.toString(),
+                    dataDetail?.id,
+                    binding.tvNameOfMovie.text.toString(),
+                    binding.tvMovieRating.rating.toDouble(),
+                    BuildConfig.BASE_IMAGE_URL + dataDetail?.posterPath
+                )
+                dbLikeMovie.insertLikelyMovie(currentMovie)
+            } else {
+                Log.e("like:", "unlike")
+            }
+        }
     }
 
     override fun onDestroy() {

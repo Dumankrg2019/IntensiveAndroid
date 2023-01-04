@@ -2,14 +2,18 @@ package ru.androidschool.intensiv.data.room.likely_movies
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ru.androidschool.intensiv.data.response.Movie
 
 @Dao
 interface LikeMovieDao {
     @Insert
-    suspend fun insertAll(vararg dogs:Movie):List<Long>
+    fun insertAll(vararg movies:LikelyMovie):List<Long>
 
-    @Query("SELECT * FROM likemoviedatabase")
-    suspend fun getAllLikelyMovies():List<Movie>
+    @Query("SELECT * FROM movie_table")
+    fun getAllLikelyMovies():List<LikelyMovie>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertLikelyMovie(movies:LikelyMovie)
 }

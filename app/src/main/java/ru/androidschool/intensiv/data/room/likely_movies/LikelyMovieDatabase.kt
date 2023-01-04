@@ -4,9 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import ru.androidschool.intensiv.data.response.Movie
 
-@Database(entities = [Movie::class], version = 1)
+@Database(entities = [LikelyMovie::class], version = 2)
 abstract class LikelyMovieDatabase: RoomDatabase() {
 
     abstract fun likeMovieDao(): LikeMovieDao
@@ -19,7 +18,8 @@ abstract class LikelyMovieDatabase: RoomDatabase() {
             if (instance == null) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
-                    LikelyMovieDatabase::class.java, "likemoviedatabase"
+                    LikelyMovieDatabase::class.java,
+                    "likemoviedatabase"
                 ).build()
             }
             return instance!!
