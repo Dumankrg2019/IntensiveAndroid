@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 apply from: "../ktlint.gradle"
 
@@ -90,4 +91,9 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxandroid:$rootProject.rxAndroidVersion"
     implementation "io.reactivex.rxjava3:rxjava:$rootProject.rxJavaVersion"
     implementation "com.jakewharton.rxbinding4:rxbinding-material:$rootProject.rxBindingVersion"
+
+    // Room components
+    implementation "androidx.room:room-ktx:2.4.3"
+    kapt "androidx.room:room-compiler:2.4.3"
+    androidTestImplementation "androidx.room:room-testing:2.4.3"
 }
