@@ -127,7 +127,13 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                     binding.tvMovieRating.rating.toDouble(),
                     BuildConfig.BASE_IMAGE_URL + dataDetail?.posterPath
                 )
+
                 dbLikeMovie.insertLikelyMovie(currentMovie)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe{ binding.pbDetailMovie.visibility = View.VISIBLE }
+                    .doFinally{ binding.pbDetailMovie.visibility = View.GONE }
+                    .subscribe( )
             } else {
                 Log.e("like:", "unlike")
             }
