@@ -21,4 +21,12 @@ interface LikeMovieDao {
     // чтобы появились операторы SubscribeOn и прочие пришлось возвращать Single
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertLikelyMovie(movies:LikelyMovie): Completable
+
+    @Query("SELECT * FROM movie_table WHERE movie_id == :id")
+    fun isExistInLikelyMovieDB(id: Int): Single<LikelyMovie>
+
+
+    // сделал, чтобы возвращало Completable - по другому вылетала ошибка
+    @Query("DELETE FROM movie_table WHERE movie_id == :id")
+    fun deleteItemInLikelyMovieDB(id: Int): Completable
 }

@@ -1,9 +1,7 @@
 package ru.androidschool.intensiv.ui.movie_details
 
 import android.annotation.SuppressLint
-import android.os.Build
-import android.os.Bundle
-import android.os.StrictMode
+import android.os.*
 import android.os.StrictMode.ThreadPolicy
 import android.util.Log
 import android.view.LayoutInflater
@@ -116,13 +114,42 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                 }
             )
 
+        Log.e("id of movie", "${dataDetail?.id}")
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                Log.e("id of movie", "${dataDetail?.id}")
+                dbLikeMovie.isExistInLikelyMovieDB(movieId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {isLike->
+                            isLike.let {
+                                if(it.id == movieId) {
+                                    Log.e("isLike", "Да, лайк")
+                                    binding.chbLike.isChecked = true
+                                } else {
+                                    Log.e("isLike", "Нет, zhoq")
+                                }
+                            }
+                        },
+                        {error->
+                            Log.e("isLikeError", "$error")
+                            //почему то вылетает ошибка, когда не совпадают айди
+                            //пишет вот так "Query returned empty result set: SELECT * FROM movie_table WHERE movie_id == "
+                            //странно, ведь я передаю айди, он считает будто он нулл...даже логом вывожу значение и оно не нулл
+                        }
+                    )
+            },
+            PAUSE_TIME
+        )
+
         binding.chbLike.setOnCheckedChangeListener {btn, isChecked->
             if(isChecked) {
                 Log.e("like:", "like")
                 val currentMovie = LikelyMovie(
                     binding.tvAboutMovie.text.toString(),
                     binding.tvYearMovieMade.text.toString(),
-                    dataDetail?.id,
+                    movieId,
                     binding.tvNameOfMovie.text.toString(),
                     binding.tvMovieRating.rating.toDouble(),
                     BuildConfig.BASE_IMAGE_URL + dataDetail?.posterPath
@@ -136,6 +163,12 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                     .subscribe( )
             } else {
                 Log.e("like:", "unlike")
+                dbLikeMovie.deleteItemInLikelyMovieDB(movieId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe{ binding.pbDetailMovie.visibility = View.VISIBLE }
+                    .doFinally{ binding.pbDetailMovie.visibility = View.GONE }
+                    .subscribe()
             }
         }
     }
@@ -146,5 +179,6 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
     }
 
     companion object {
+        val PAUSE_TIME = 2500L
     }
 }
