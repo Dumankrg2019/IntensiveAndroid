@@ -1,6 +1,7 @@
 package ru.androidschool.intensiv.ui.watchlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.androidschool.intensiv.data.MockRepository
+import ru.androidschool.intensiv.data.room.likely_movies.LikelyMovieDatabase
 import ru.androidschool.intensiv.databinding.FragmentWatchlistBinding
 
 class WatchlistFragment : Fragment() {
@@ -38,14 +42,47 @@ class WatchlistFragment : Fragment() {
         binding.moviesRecyclerView.layoutManager = GridLayoutManager(context, 4)
         binding.moviesRecyclerView.adapter = adapter.apply { addAll(listOf()) }
 
-        val moviesList =
-            MockRepository.getMovies().map {
-                MoviePreviewItem(
-                    it
-                ) { movie -> }
-            }.toList()
+        val dbLikeMovie = LikelyMovieDatabase.get(requireActivity()).likeMovieDao().getAllLikelyMovies()
 
-        binding.moviesRecyclerView.adapter = adapter.apply { addAll(moviesList) }
+
+        val moviesList =
+//            MockRepository.getMovies().map {
+//                MoviePreviewItem(
+//                    it
+//                ) { movie -> }
+//            }.toList()
+            dbLikeMovie
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {likeMovies->
+                        likeMovies.let {item->
+                            binding.moviesRecyclerView.adapter = adapter.apply {
+                                addAll(item.map {
+                                    MoviePreviewItem(it) {
+                                        movie->
+                                    }
+                                }.toList()
+                                )
+                            }
+//                            item.map {
+//                                MoviePreviewItem(
+//                                    it
+//                                ) {movie ->}
+//                            }.toList()
+                        }
+                    },
+                    {error->
+                        Log.e("error db", error.toString())
+                    }
+                )
+//            dbLikeMovie.getAllLikelyMovies().map {
+//                MoviePreviewItem(
+//                    it
+//                ) {movie ->}
+//            }.toList()
+
+        //binding.moviesRecyclerView.adapter = adapter.apply { addAll(moviesList) }
     }
 
     override fun onDestroyView() {
