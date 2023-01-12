@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ru.androidschool.intensiv.ui.movie_details.MovieDetailsFragment"
+    tools:context=".presentation.ui.movie_details.MovieDetailsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="ru.androidschool.intensiv.ui.movie_details.MovieDetailsFragment"
+        tools:context=".presentation.ui.movie_details.MovieDetailsFragment"
         android:background="@color/blueDark"
         >
         <View

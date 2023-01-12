@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import ru.androidschool.intensiv.BuildConfig
-import ru.androidschool.intensiv.data.response.detail_movie.ProductionCompany
 
 
 @Entity(tableName = "movie_table")

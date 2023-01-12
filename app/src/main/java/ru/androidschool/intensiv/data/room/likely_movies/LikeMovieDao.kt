@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
-import ru.androidschool.intensiv.data.response.Movie
 
 @Dao
 interface LikeMovieDao {
