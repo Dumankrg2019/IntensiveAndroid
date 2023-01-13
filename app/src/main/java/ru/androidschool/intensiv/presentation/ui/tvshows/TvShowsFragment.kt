@@ -49,7 +49,7 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment), TvShowPresenter.Tv
         super.onViewCreated(view, savedInstanceState)
 
 
-        val getTvShows = MovieApiClient.apiClient.getTvShows()
+       // val getTvShows = MovieApiClient.apiClient.getTvShows()
 
         presenter.getTvShows()
         //запрос а список сериалов Rx
@@ -83,14 +83,18 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment), TvShowPresenter.Tv
     companion object {
     }
 
-    override fun showTvShows(tvShows: List<Result>) {
-        binding.rvTvShows.adapter = adapter.apply {
+
+    override fun showTvShowws(tvShows: List<Result?>?) {
+        Log.e("in method tvShows: ", "$tvShows")
+        //вроде ошибок нет, но список не отображает((
+        adapter.apply {
             addAll(
-                tvShows.map {
-                    TvShowCardContainer(it, requireActivity())
-                }.toList()
+                tvShows?.map {
+                    TvShowCardContainer(it!!, requireActivity())
+                }!!.toList()
             )
         }
+        binding.rvTvShows.adapter = adapter
     }
 
 }

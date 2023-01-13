@@ -12,7 +12,8 @@ class TvShowPresenter(private val useCase: TvShowUseCase):
         useCase.getTvShows()
             .subscribe(
                 {show->
-                    view?.showTvShows(show.results as List<Result>)
+                    view?.showTvShowws(show.results)
+                    Log.e("success shows: ", "${show.results}")
                 },
                 {error->
                     Log.e("error: ", "from TvShow Presenter $error")
@@ -21,6 +22,6 @@ class TvShowPresenter(private val useCase: TvShowUseCase):
     }
 
     interface TvShowView {
-        fun showTvShows(tvShows: List<Result>)
+        fun showTvShowws(tvShows: List<Result?>?)
     }
 }
