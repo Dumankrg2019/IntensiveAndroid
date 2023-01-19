@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -17,6 +18,7 @@ import ru.androidschool.intensiv.databinding.FragmentWatchlistBinding
 class WatchlistFragment : Fragment() {
 
     private var _binding: FragmentWatchlistBinding? = null
+    lateinit var viewModel: WhatchListViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -38,43 +40,48 @@ class WatchlistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(requireActivity()).get(WhatchListViewModel::class.java)
+
         binding.moviesRecyclerView.layoutManager = GridLayoutManager(context, 4)
         binding.moviesRecyclerView.adapter = adapter.apply { addAll(listOf()) }
 
         val dbLikeMovie = LikelyMovieDatabase.get(requireActivity()).likeMovieDao().getAllLikelyMovies()
 
 
-        val moviesList =
-//            MockRepository.getMovies().map {
-//                MoviePreviewItem(
-//                    it
-//                ) { movie -> }
-//            }.toList()
-            dbLikeMovie
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {likeMovies->
-                        likeMovies.let {item->
-                            binding.moviesRecyclerView.adapter = adapter.apply {
-                                addAll(item.map {
-                                    MoviePreviewItem(it) {
-                                        movie->
-                                    }
-                                }.toList()
-                                )
-                            }
-//                            item.map {
-//                                MoviePreviewItem(
-//                                    it
-//                                ) {movie ->}
-//                            }.toList()
+        viewModel.dbLikeMovie.observe(requireActivity(), {likelyMovies->
+            likelyMovies?.let {movies->
+
+                binding.moviesRecyclerView.adapter = adapter.apply{
+                    addAll(movies.map {
+                        MoviePreviewItem(it) {
+                            movie->
                         }
-                    },
-                    {error->
-                        Log.e("error db", error.toString())
-                    }
-                )
+                    }.toList()
+                    )
+                }
+            }
+        })
+//        val moviesList =
+//            dbLikeMovie
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                    {likeMovies->
+//                        likeMovies.let {item->
+//                            binding.moviesRecyclerView.adapter = adapter.apply {
+//                                addAll(item.map {
+//                                    MoviePreviewItem(it) {
+//                                        movie->
+//                                    }
+//                                }.toList()
+//                                )
+//                            }
+//                        }
+//                    },
+//                    {error->
+//                        Log.e("error db", error.toString())
+//                    }
+//                )
 //            dbLikeMovie.getAllLikelyMovies().map {
 //                MoviePreviewItem(
 //                    it

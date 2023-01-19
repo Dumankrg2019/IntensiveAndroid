@@ -1,5 +1,6 @@
 package ru.androidschool.intensiv.data.room.likely_movies
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,7 +14,7 @@ interface LikeMovieDao {
     fun insertAll(vararg movies:LikelyMovie):List<Long>
 
     @Query("SELECT * FROM movie_table")
-    fun getAllLikelyMovies(): Single<List<LikelyMovie>>
+    fun getAllLikelyMovies(): LiveData<List<LikelyMovie>>
 
     //не совсем понял как
     // реализовать запись в бд через Rx

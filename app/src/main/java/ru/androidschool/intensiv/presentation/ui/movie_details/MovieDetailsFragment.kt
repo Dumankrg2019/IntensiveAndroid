@@ -75,7 +75,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                                 tvNameOfMovie.text = it.title
                                 tvMovieRating.rating = it.vote_average?.toFloat() ?: 0.0f
                                 tvAboutMovie.text = it.overview
-                                tvStudioName.text = it.production_companies?.get(0)?.name
+                                //tvStudioName.text = it.production_companies?.get(0)?.name
                                 tvGenreName.text = it.genres?.get(0)?.name
                                 tvYearMovieMade.text = it.release_date
                             }
@@ -142,6 +142,9 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         )
 
         binding.chbLike.setOnCheckedChangeListener {btn, isChecked->
+            //почему то когда кликаешь(когда сделал на MVVM)
+            // вылеатет ошибка нуллпойинтерЭксепшн, во фрагменте WatchlistFragment,
+            // хотя они не связаны
             if(isChecked) {
                 Log.e("like:", "like")
                 val currentMovie = LikelyMovie(
