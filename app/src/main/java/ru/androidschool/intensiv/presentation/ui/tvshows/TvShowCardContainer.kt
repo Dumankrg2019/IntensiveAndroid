@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.xwray.groupie.viewbinding.BindableItem
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.domain.models.tv_shows.Result
+import ru.androidschool.intensiv.data.models.tv_shows.Result
 import ru.androidschool.intensiv.databinding.ItemTvshowBinding
 import ru.androidschool.intensiv.util.getProgressDrawable
 import ru.androidschool.intensiv.util.loadImage

@@ -3,7 +3,7 @@ package ru.androidschool.intensiv.presentation.ui.feed
 import android.view.View
 import com.xwray.groupie.viewbinding.BindableItem
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.domain.models.Movie
+import ru.androidschool.intensiv.data.models.Movie
 import ru.androidschool.intensiv.databinding.ItemWithTextBinding
 import ru.androidschool.intensiv.util.getProgressDrawable
 import ru.androidschool.intensiv.util.loadImage

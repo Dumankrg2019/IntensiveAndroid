@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.MockRepository
-import ru.androidschool.intensiv.domain.models.detail_movie.DetailMovieResponse
+import ru.androidschool.intensiv.data.models.detail_movie.DetailMovieResponse
 import ru.androidschool.intensiv.data.room.likely_movies.LikelyMovie
 import ru.androidschool.intensiv.data.room.likely_movies.LikelyMovieDatabase
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding

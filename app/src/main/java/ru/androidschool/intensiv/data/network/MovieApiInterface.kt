@@ -7,10 +7,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.androidschool.intensiv.BuildConfig
-import ru.androidschool.intensiv.domain.models.MovieResponse
-import ru.androidschool.intensiv.domain.models.detail_movie.DetailMovieResponse
-import ru.androidschool.intensiv.domain.models.movie_cast.MovieCast
-import ru.androidschool.intensiv.domain.models.tv_shows.TvShowResponse
+import ru.androidschool.intensiv.data.models.MovieResponse
+import ru.androidschool.intensiv.data.models.detail_movie.DetailMovieResponse
+import ru.androidschool.intensiv.data.models.movie_cast.MovieCast
+import ru.androidschool.intensiv.data.models.tv_shows.TvShowResponse
 
 interface MovieApiInterface {
 

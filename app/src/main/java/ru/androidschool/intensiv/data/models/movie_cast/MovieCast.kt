@@ -1,4 +1,4 @@
-package ru.androidschool.intensiv.domain.models.movie_cast
+package ru.androidschool.intensiv.data.models.movie_cast
 
 import com.google.gson.annotations.SerializedName
 

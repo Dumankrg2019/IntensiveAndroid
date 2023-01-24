@@ -1,28 +1,33 @@
-package ru.androidschool.intensiv.domain.models.movie_cast
+package ru.androidschool.intensiv.data.models.movie_cast
 
 import com.google.gson.annotations.SerializedName
+import ru.androidschool.intensiv.BuildConfig
 
-data class Crew(
+data class Cast(
     @SerializedName("adult")
     val adult: Boolean,
+    @SerializedName("cast_id")
+    val cast_id: Int,
+    @SerializedName("character")
+    val character: String,
     @SerializedName("credit_id")
     val credit_id: String,
-    @SerializedName("department")
-    val department: String,
     @SerializedName("gender")
     val gender: Int,
     @SerializedName("id")
     val id: Int,
-    @SerializedName("job")
-    val job: String,
     @SerializedName("known_for_department")
     val known_for_department: String,
     @SerializedName("name")
     val name: String,
+    @SerializedName("order")
+    val order: Int,
     @SerializedName("original_name")
     val original_name: String,
     @SerializedName("popularity")
-    val popularity: Double,
+    val popularity: Double
+) {
     @SerializedName("profile_path")
-    val profile_path: String
-)
+    var profilePath: String? = null
+        get() = "${BuildConfig.BASE_IMAGE_URL}$field"
+}

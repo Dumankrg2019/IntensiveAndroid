@@ -1,4 +1,4 @@
-package ru.androidschool.intensiv.domain.models.detail_movie
+package ru.androidschool.intensiv.data.models.detail_movie
 
 import com.google.gson.annotations.SerializedName
 import ru.androidschool.intensiv.BuildConfig

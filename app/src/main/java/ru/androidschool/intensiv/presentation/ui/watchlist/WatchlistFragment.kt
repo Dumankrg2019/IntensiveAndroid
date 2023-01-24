@@ -42,7 +42,7 @@ class WatchlistFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(WhatchListViewModel::class.java)
 
-        binding.moviesRecyclerView.layoutManager = GridLayoutManager(context, 4)
+        binding.moviesRecyclerView.layoutManager = GridLayoutManager(context, COUNT_OF_COLUMN)
         binding.moviesRecyclerView.adapter = adapter.apply { addAll(listOf()) }
 
         val dbLikeMovie = LikelyMovieDatabase.get(requireActivity()).likeMovieDao().getAllLikelyMovies()
@@ -99,5 +99,7 @@ class WatchlistFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = WatchlistFragment()
+
+        val COUNT_OF_COLUMN = 4
     }
 }

@@ -1,7 +1,7 @@
 package ru.androidschool.intensiv.presentation.ui.tvshows
 
 import android.util.Log
-import ru.androidschool.intensiv.domain.models.tv_shows.Result
+import ru.androidschool.intensiv.data.models.tv_shows.Result
 import ru.androidschool.intensiv.domain.usecases.TvShowUseCase
 import ru.androidschool.intensiv.util.BasePresenter
 

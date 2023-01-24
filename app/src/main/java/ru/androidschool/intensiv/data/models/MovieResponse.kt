@@ -1,4 +1,4 @@
-package ru.androidschool.intensiv.domain.models
+package ru.androidschool.intensiv.data.models
 import com.google.gson.annotations.SerializedName
 
 data class MovieResponse(

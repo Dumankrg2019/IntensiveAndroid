@@ -1,4 +1,4 @@
-package ru.androidschool.intensiv.domain.models.tv_shows
+package ru.androidschool.intensiv.data.models.tv_shows
 
 import com.google.gson.annotations.SerializedName
 

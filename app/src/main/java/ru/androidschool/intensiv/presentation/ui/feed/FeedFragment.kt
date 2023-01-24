@@ -14,14 +14,14 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.Function3
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.domain.models.Movie
+import ru.androidschool.intensiv.data.models.Movie
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.data.network.MovieApiClient
 import ru.androidschool.intensiv.presentation.ui.afterTextChanged
 import timber.log.Timber
-import ru.androidschool.intensiv.domain.models.CommonFeedQuery
-import ru.androidschool.intensiv.domain.models.MovieResponse
+import ru.androidschool.intensiv.data.models.CommonFeedQuery
+import ru.androidschool.intensiv.data.models.MovieResponse
 
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
