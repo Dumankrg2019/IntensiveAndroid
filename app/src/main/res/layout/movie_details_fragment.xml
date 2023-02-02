@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ru.androidschool.intensiv.ui.movie_details.MovieDetailsFragment"
+    tools:context=".presentation.ui.movie_details.MovieDetailsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="ru.androidschool.intensiv.ui.movie_details.MovieDetailsFragment"
+        tools:context=".presentation.ui.movie_details.MovieDetailsFragment"
         android:background="@color/blueDark"
         >
         <View
@@ -186,16 +186,17 @@
             android:layout_below="@id/tvStudioName"
             android:layout_marginStart="12dp"
             android:layout_marginTop="7dp"/>
+
         <TextView
             android:id="@+id/tvYearMovieMade"
+            style="@style/DefaultTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/DefaultTextStyle"
-            android:text="@string/defaultYearOfMovie"
-            android:layout_toEndOf="@id/textView2"
             android:layout_below="@id/tvGenreName"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="7dp"/>
+            android:layout_marginTop="7dp"
+            android:layout_toEndOf="@id/textView2"
+            android:text="@string/defaultYearOfMovie" />
 
         <ProgressBar
             android:id="@+id/pbDetailMovie"
